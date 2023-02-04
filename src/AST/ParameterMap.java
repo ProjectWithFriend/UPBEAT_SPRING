@@ -5,9 +5,10 @@ import java.util.Map;
 
 import static AST.Action.*;
 import static AST.Direction.*;
+import static AST.Info.*;
 
 public class ParameterMap {
-    public static Map<String, Parameter> map = new HashMap<>() {
+    public static Map<String, GameCommand> map = new HashMap<>() {
         {
             put("done", DONE);
             put("move", MOVE);
@@ -21,6 +22,8 @@ public class ParameterMap {
             put("upright", UPRIGHT);
             put("downleft", DOWNLEFT);
             put("downright", DOWNRIGHT);
+            put("nearby", NEARBY);
+            put("opponent", OPPONENT);
         }
     };
 }

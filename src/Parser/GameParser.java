@@ -1,14 +1,18 @@
 package Parser;
 
 import AST.*;
+import AST.Action;
+import AST.GameCommand;
 import Tokenizer.*;
 
 public class GameParser implements Parser {
     private final Tokenizer tkz;
+    private final DirectionParser directionParser;
     private final ExpressionParser expressionParser;
 
     public GameParser(Tokenizer tkz) {
         this.tkz = tkz;
+        this.directionParser = new DirectionParser(tkz);
         this.expressionParser = new ExpressionParser(tkz);
     }
 
@@ -30,42 +34,35 @@ public class GameParser implements Parser {
             return parseIfStatement();
         else if (tkz.peek("while"))
             return parseWhileStatement();
+        else if (tkz.peek("}"))
+            return null;
         else
             return parseCommand();
     }
 
     private Node parseCommand() {
         String x = tkz.consume();
-        Parameter parameter = ParameterMap.map.get(x);
+        GameCommand gameCommand = ParameterMap.map.get(x);
         if (tkz.peek("=")) {
-            if (parameter != null)
+            if (gameCommand != null)
                 throw new ParserException.ReserveIdentifier();
             tkz.consume("=");
-            return new Command.AssignCommand(x, Long.parseLong(tkz.consume()));
+            return new Command.AssignCommandNode(x, expressionParser.parse());
         } else {
-            if (parameter == null)
+            if (gameCommand == null)
                 throw new ParserException.NoCommand();
-            else if (parameter instanceof Action)
-                return switch ((Action) parameter) {
-                    case DONE, RELOCATE -> new Command.ActionCommand(parameter);
-                    case MOVE -> new Command.MoveCommand(parseDirection());
-                    case INVEST, COLLECT -> new Command.RegionCommand(parameter, expressionParser.parse());
-                    case SHOOT -> new Command.AttackCommand(parseDirection(), expressionParser.parse());
-
+            else if (gameCommand instanceof Action)
+                return switch ((Action) gameCommand) {
+                    case DONE, RELOCATE -> new Command.ActionCommandNode(gameCommand);
+                    case MOVE -> new Command.MoveCommandNode(directionParser.parse());
+                    case INVEST, COLLECT -> new Command.RegionCommandNode(gameCommand, expressionParser.parse());
+                    case SHOOT -> new Command.AttackCommandNode(directionParser.parse(), expressionParser.parse());
                 };
             else
-                throw new ParserException.NotImplement();
+                throw new ParserException.NoCommand();
         }
     }
 
-    private Direction parseDirection() {
-        String x = tkz.consume();
-        Parameter parameter = ParameterMap.map.get(x);
-        if (parameter instanceof Direction)
-            return (Direction) parameter;
-        else
-            throw new ParserException.NotImplement();
-    }
 
     private Node parseWhileStatement() {
         ConditionNode node = new ConditionNode();
@@ -74,6 +71,7 @@ public class GameParser implements Parser {
         node.expression = expressionParser.parse();
         tkz.consume(")");
         node.conditionTrue = parseStatement();
+        node.conditionFalse = node;
         node.conditionTrue.next = node;
         return node;
     }
@@ -97,7 +95,10 @@ public class GameParser implements Parser {
             Node current = parseStatement();
             if (node != null)
                 node.next = current;
-            node = current;
+            if (current == null)
+                break;
+            if (node == null)
+                node = current;
         }
         return node;
     }

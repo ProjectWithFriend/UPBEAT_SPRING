@@ -32,9 +32,9 @@ public class IterateTokenizer implements Tokenizer {
     }
 
     @Override
-    public String consume() throws IllegalStateException{
+    public String consume() {
         if (!hasNext()) {
-            throw new IllegalStateException("No more tokens");
+            throw new TokenizerException.NoToken();
         } else {
             String result = next;
             computeNext();
@@ -43,20 +43,21 @@ public class IterateTokenizer implements Tokenizer {
     }
 
     @Override
-    public boolean consume(String s) throws IllegalStateException{
+    public boolean consume(String s){
         if (!hasNext()) {
-            throw new IllegalStateException("No more tokens");
+            throw new TokenizerException.NoToken();
         } else {
             if (next.equals(s)) {
                 computeNext();
                 return true;
             } else {
-                throw new IllegalStateException("Expected " + s + " but got " + next);
+                throw new TokenizerException.NotMatchToken(s, next);
             }
         }
     }
 
-    private void computeNext() throws IllegalArgumentException {
+    private void computeNext() {
+        if (src == null) return;
         StringBuilder sb = new StringBuilder();
         while (pos < src.length() && Character.isWhitespace(src.charAt(pos))) {
             pos++;
@@ -76,11 +77,11 @@ public class IterateTokenizer implements Tokenizer {
                 sb.append(src.charAt(pos));
                 pos++;
             }
-        } else if (c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^') {
+        } else if ("()+-*/%^{}=".contains(String.valueOf(c))) {
             sb.append(src.charAt(pos));
             pos++;
         } else {
-            throw new IllegalArgumentException("Illegal character: " + c);
+            throw new TokenizerException.BadCharacter(c);
         }
         next = sb.toString();
     }

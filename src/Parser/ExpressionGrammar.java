@@ -1,6 +1,10 @@
 package Parser;
 
+import AST.Direction;
+import AST.Info;
+
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
 public class ExpressionGrammar {
@@ -57,15 +61,32 @@ public class ExpressionGrammar {
         }
     }
 
-    public static class Factor extends ExpressionNode {
+    public static class Factor extends BinaryArithmetic {
+        public Factor(ExpressionNode lhs, String op, ExpressionNode rhs) {
+            super(lhs, op, rhs);
+        }
+
+        @Override
+        public long eval(Map<String, Long> bindings) {
+            return switch (super.op) {
+                case "^" -> (long) Math.pow(
+                        super.lhs.eval(bindings),
+                        super.rhs.eval(bindings)
+                );
+                default -> throw new ParserException.OperatorNotFound(super.op);
+            };
+        }
+    }
+
+    public static class Power extends ExpressionNode {
         private String n;
         private ExpressionNode node;
 
-        public Factor(ExpressionNode node) {
+        public Power(ExpressionNode node) {
             this.node = node;
         }
 
-        public Factor(String n) {
+        public Power(String n) {
             this.n = n;
         }
 
@@ -81,6 +102,24 @@ public class ExpressionGrammar {
             }
             if (isNumber(n)) return Integer.parseInt(n);
             else return bindings.get(n);
+        }
+    }
+
+    public static class Info extends ExpressionNode {
+
+        private final AST.Info info;
+        private final Direction direction;
+
+        public Info(AST.Info info, Direction direction) {
+            this.info = info;
+            if (info == AST.Info.OPPONENT && direction == null)
+                throw new ParserException.InvalidParameter();
+            this.direction = direction;
+        }
+
+        @Override
+        public long eval(Map<String, Long> bindings) {
+            return 0; // TODO: make it work
         }
     }
 }

@@ -34,4 +34,16 @@ public class ParserException extends RuntimeException {
             super(message);
         }
     }
+
+    public static class InvalidParameter extends ParserException {
+        public InvalidParameter() {
+            super("invalid parameter");
+        }
+    }
+
+    public static class InvalidSyntax extends ParserException {
+        public InvalidSyntax(String syntax) {
+            super("invalid syntax (" + syntax + ")");
+        }
+    }
 }

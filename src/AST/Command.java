@@ -1,34 +1,41 @@
 package AST;
 
+import Parser.ExpressionNode;
 import Parser.Node;
 
 public class Command {
-    public static class AssignCommand extends Node {
-        public AssignCommand(String name, long value) {// TODO: implement it
+    // TODO: ใส่โหนด
+    public static class AssignCommandNode extends Node {
+        String name;
+        ExpressionNode expr;
+
+        public AssignCommandNode(String name, ExpressionNode value) {// TODO: implement it
+            this.name = name;
+            expr = value;
+        }
+    }
+
+    public static class ActionCommandNode extends Node {
+        GameCommand command;
+        public ActionCommandNode(GameCommand gameCommand) {// TODO: implement it
+            this.command=gameCommand;
+        }
+    }
+
+    public static class RegionCommandNode extends Node {
+        public RegionCommandNode(GameCommand gameCommand, Node expression) {// TODO: implement it
 
         }
     }
 
-    public static class ActionCommand extends Node {
-        public ActionCommand(Parameter parameter) {// TODO: implement it
+    public static class MoveCommandNode extends Node {
+        public MoveCommandNode(GameCommand direction) {// TODO: implement it
 
         }
     }
 
-    public static class RegionCommand extends Node {
-        public RegionCommand(Parameter parameter, Node expression) {// TODO: implement it
-
-        }
-    }
-
-    public static class MoveCommand extends Node {
-        public MoveCommand(Parameter direction) {// TODO: implement it
-
-        }
-    }
-
-    public static class AttackCommand extends Node {
-        public AttackCommand(Parameter direction, Node expression) {// TODO: implement it
+    public static class AttackCommandNode extends Node {
+        public AttackCommandNode(GameCommand direction, Node expression) {// TODO: implement it
 
         }
     }
