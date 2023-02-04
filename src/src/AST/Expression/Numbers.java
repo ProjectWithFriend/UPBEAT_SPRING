@@ -1,8 +1,11 @@
-package AST;
+package AST.Expression;
+
+import AST.Expression.Expr;
+import AST.Node;
 
 import java.util.Map;
 
-public class Numbers implements Expr{
+public class Numbers implements Expr {
     private int value;
     public Numbers(int value) {
         this.value = value;
@@ -15,5 +18,10 @@ public class Numbers implements Expr{
     @Override
     public void prettyPrint(StringBuilder s) {
         s.append(value);
+    }
+
+    @Override
+    public void addChild(Node child) {
+        // do nothing
     }
 }

@@ -1,9 +1,14 @@
-package AST;
+package AST.ActionCommand;
+
+import AST.ActionCommand.Actions;
+import AST.Expression.Expr;
+import AST.Node;
 
 import java.util.Map;
 
-public class InfoExp implements Expr, Actions{
+public class InfoExp implements Expr, Actions {
     private String info;
+    private Node child;
 
     public InfoExp(String info) {
         this.info = info;
@@ -22,6 +27,7 @@ public class InfoExp implements Expr, Actions{
 
     @Override
     public void addChild(Node child) {
+        this.child = child;
     }
 
     @Override

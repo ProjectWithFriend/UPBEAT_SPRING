@@ -1,7 +1,8 @@
 package Parser;
 
-import AST.*;
+import AST.ActionCommand.Actions;
+import AST.Node;
 
 public interface Parser {
-    Actions parse();
+    Node parse();
 }

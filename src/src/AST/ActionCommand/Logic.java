@@ -1,6 +1,9 @@
-package AST;
+package AST.ActionCommand;
 
-public class Logic implements Actions{
+import AST.ActionCommand.Actions;
+import AST.Node;
+
+public class Logic implements Actions {
     private String name;
     private Node child;
 

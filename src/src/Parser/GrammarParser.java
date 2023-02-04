@@ -1,6 +1,10 @@
 package Parser;
 
-import AST.*;
+import AST.ActionCommand.Actions;
+import AST.ActionCommand.InfoExp;
+import AST.ActionCommand.Logic;
+import AST.Expression.*;
+import AST.Node;
 import Tokenizer.*;
 
 import java.util.HashMap;
@@ -31,22 +35,22 @@ public class GrammarParser implements Parser {
         this.tkz = tkz;
     }
 
-    public Actions parse() {
-        Actions actions = parsePlan();
+    public Node parse() {
+        Node actions = parsePlan();
         if (tkz.hasNext())
             throw new RuntimeException("Unexpected token: " + tkz.peek());
         return actions;
     }
 
-    private Actions parsePlan() {
-        Actions actions = parseStatement();
+    private Node parsePlan() {
+        Node actions = parseStatement();
         while (tkz.hasNext()) {
             actions.addChild(parseStatement());
         }
         return actions;
     }
 
-    private Actions parseStatement() {
+    private Node parseStatement() {
         if (tkz.peek("if"))
             return parseIfStatement();
 //        if (tkz.peek("while"))
@@ -56,16 +60,23 @@ public class GrammarParser implements Parser {
         return parseCommand();
     }
 
-    private Actions parseIfStatement() {
+    private Node parseIfStatement() {
         tkz.consume("if");
         tkz.consume("(");
         Expr condition = parseExpression();
         if (condition.eval(memory) >= 1) {
             tkz.consume(")");
             tkz.consume("then");
-            return parseStatement();
+            Node action = parseStatement();
+            if(tkz.peek("else")){ //clear the else statement
+                tkz.consume();
+                parseStatement();
+            }
+            return action;
         } else {
             tkz.consume(")");
+            tkz.consume("then"); //clear the then statement
+            parseStatement(); //clear the then statement
             tkz.consume("else");
             return parseStatement();
         }
@@ -129,17 +140,23 @@ public class GrammarParser implements Parser {
         return null;
     }
 
-    private Actions parseCommand() {
+    private Node parseCommand() {
         if (tkz.peek("done") || tkz.peek("relocate") ||
                 tkz.peek("move") || tkz.peek("invest") ||
                 tkz.peek("collect") || tkz.peek("shoot")) {
             return parseActionCommand();
         }
-//        return parseAssignmentStatement();
+        return parseAssignmentStatement();
+    }
+
+    private Node parseAssignmentStatement() {
+        String identifier = tkz.consume();
+        tkz.consume("=");
+        Expr expr = parseExpression();
         return null;
     }
 
-    private Actions parseActionCommand() {
+    private Node parseActionCommand() {
         if (tkz.peek("done") || tkz.peek("relocate")) {
             String action = tkz.consume();
             System.out.println(action);

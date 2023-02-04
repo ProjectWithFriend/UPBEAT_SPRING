@@ -1,4 +1,7 @@
-package AST;
+package AST.Expression;
+
+import AST.Expression.Expr;
+import AST.Node;
 
 import java.util.Map;
 
@@ -32,5 +35,10 @@ public class Compute implements Expr {
         s.append(op);
         right.prettyPrint(s);
         s.append(")");
+    }
+
+    @Override
+    public void addChild(Node child) {
+        //this node has no children create for avoiding errors
     }
 }
