@@ -1,0 +1,26 @@
+package AST;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static AST.Action.*;
+import static AST.Direction.*;
+
+public class ParameterMap {
+    public static Map<String, Parameter> map = new HashMap<>() {
+        {
+            put("done", DONE);
+            put("move", MOVE);
+            put("invest", INVEST);
+            put("relocate", RELOCATE);
+            put("collect", COLLECT);
+            put("shoot", SHOOT);
+            put("up", UP);
+            put("down", DOWN);
+            put("upleft", UPLEFT);
+            put("upright", UPRIGHT);
+            put("downleft", DOWNLEFT);
+            put("downright", DOWNRIGHT);
+        }
+    };
+}
