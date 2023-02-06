@@ -8,5 +8,6 @@ public class Main {
         Parser parser = new GrammarParser(new IterateTokenizer("if(1)then done else relocate"));
         Node tree = parser.parse();
         parser.runTree();
+        //Test Something
     }
 }
