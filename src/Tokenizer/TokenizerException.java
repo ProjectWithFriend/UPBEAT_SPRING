@@ -1,8 +1,6 @@
 package Tokenizer;
 
-import Parser.ParserException;
-
-public class TokenizerException extends RuntimeException {
+public class TokenizerException extends RuntimeException{
     public TokenizerException(String message) {
         super(message);
     }

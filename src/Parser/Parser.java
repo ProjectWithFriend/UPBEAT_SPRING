@@ -1,5 +1,8 @@
 package Parser;
 
+import AST.Node;
+
 public interface Parser {
-    Node parse() throws ParserException;
+    Node parse();
+    void runTree();
 }

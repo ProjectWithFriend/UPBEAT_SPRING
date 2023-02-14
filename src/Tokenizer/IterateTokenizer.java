@@ -1,6 +1,6 @@
 package Tokenizer;
 
-public class IterateTokenizer implements Tokenizer {
+public class IterateTokenizer implements Tokenizer{
     private String src, next;
     private int pos;
 
@@ -16,9 +16,9 @@ public class IterateTokenizer implements Tokenizer {
     }
 
     @Override
-    public String peek() throws IllegalStateException{
+    public String peek(){
         if(next == null)
-            throw new IllegalStateException("No more tokens");
+            throw new TokenizerException.NoToken();
         return next;
     }
 
@@ -51,7 +51,7 @@ public class IterateTokenizer implements Tokenizer {
                 computeNext();
                 return true;
             } else {
-                throw new TokenizerException.NotMatchToken(s, next);
+                return false;
             }
         }
     }
