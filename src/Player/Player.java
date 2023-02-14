@@ -1,5 +1,7 @@
 package Player;
 
+import java.util.Map;
+
 public interface Player {
     boolean isAlive();
     long attack(String direction);
@@ -9,4 +11,5 @@ public interface Player {
     int[] getCityCenterLocation();
     int[] getCityCrewLocation();
     String getName();
+    Map<String,Long> getIdentifiers();
 }

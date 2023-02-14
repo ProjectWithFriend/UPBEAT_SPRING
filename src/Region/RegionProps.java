@@ -6,6 +6,12 @@ public class RegionProps implements Region {
     private double budget;
     private String owner;
 
+    public RegionProps(int x,int y){
+        this.location = new int[]{x,y};
+        this.budget = 1000;
+        this.owner = "None";
+    }
+
     @Override
     public String getOwner() {
         return this.owner;
@@ -33,6 +39,6 @@ public class RegionProps implements Region {
 
     @Override
     public int getNearby() {
-        return Integer.MAX_VALUE; //TODO: To remove this in future
+        return Integer.MAX_VALUE; //TODO To remove this in future
     }
 }

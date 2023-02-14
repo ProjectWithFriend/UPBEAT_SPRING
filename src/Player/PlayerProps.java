@@ -22,6 +22,11 @@ public class PlayerProps implements Player {
     }
 
     @Override
+    public Map<String, Long> getIdentifiers() {
+        return identifier;
+    }
+
+    @Override
     public boolean isAlive() {
         return alive;
     }
