@@ -17,7 +17,8 @@ public class PlayerProps implements Player {
         this.moveBudget = 0;
         this.timeLeft = 0;
         this.alive = true;
-        this.cityCenterLocation = {0,0};
+        this.cityCenterLocation = new int[]{};
+        this.cityCrewLocation = new int[]{};
     }
 
     @Override

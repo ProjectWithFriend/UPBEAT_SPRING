@@ -1,20 +1,24 @@
 package AST;
 
-public class AssignmentNode extends Node{
-    private final String identifier;
-    private final Node expression;
+import Player.Player;
+import static AST.Node.*;
+import static AST.ASTException.*;
 
-    public AssignmentNode(String identifier, Node expression) {
+public class AssignmentNode extends ExecNode {
+    private final String identifier;
+    private final ExprNode expression;
+
+    public AssignmentNode(String identifier, ExprNode expression) {
         this.identifier = identifier;
         this.expression = expression;
     }
     public String getIdentifier() {
         return identifier;
     }
-    public Node getExpression() {
+    public ExprNode getExpression() {
         return expression;
     }
-    public void execute() {
-        System.out.println("Assignment");
+    public ExecNode execute(Player player) {
+        throw new NotImplemented(); // TODO: implement execution step
     }
 }

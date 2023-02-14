@@ -1,12 +1,16 @@
 package AST;
 
-public class MoveNode extends Node{
+import Player.Player;
+
+import static AST.Node.*;
+
+public class MoveNode extends ExecNode {
     private String direction;
 
     public MoveNode(String direction){
         this.direction = direction;
     }
-    public void execute(){
-        System.out.println("Move " + direction);
+    public ExecNode execute(Player player){
+        throw new ASTException.NotImplemented(); // TODO: implement execution step
     }
 }
