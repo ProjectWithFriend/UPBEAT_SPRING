@@ -1,5 +1,13 @@
+import Parser.GrammarParser;
+import Parser.Parser;
+import Tokenizer.IterateTokenizer;
+import AST.Node;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Parser parser = new GrammarParser(new IterateTokenizer("if(1)then done else relocate"));
+        Node tree = parser.parse();
+        parser.runTree();
+        //Test Something
     }
 }
