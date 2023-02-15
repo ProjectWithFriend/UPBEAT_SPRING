@@ -3,18 +3,18 @@ package Player;
 import java.util.Map;
 
 public class PlayerProps implements Player {
+    String name;
     private int[] cityCenterLocation;
     private final int[] cityCrewLocation;
-    private double attackBudget;
-    private double moveBudget;
+    private double actionBudget;
+    private double budget;
     private double timeLeft;
     private boolean alive;
     private Map<String,Long> identifier;
 
-    public PlayerProps(){
+    public PlayerProps(String name){
+        this.name = name;
         double budget = 1000;
-        this.attackBudget = 0;
-        this.moveBudget = 0;
         this.timeLeft = 0;
         this.alive = true;
         this.cityCenterLocation = new int[]{};
@@ -38,11 +38,50 @@ public class PlayerProps implements Player {
 
     @Override
     public void updateBudget(double amount) {
-
+        this.budget += amount;
     }
 
     @Override
     public void moveCityCrew(String direction) {
+        switch (direction) { //TODO might be wrong
+            case "up" -> this.cityCrewLocation[1] += 1;
+            case "down" -> this.cityCrewLocation[1] -= 1;
+            case "upleft" -> {
+                this.cityCrewLocation[0] -= 1;
+                this.cityCrewLocation[1] += 1;
+            }
+            case "upright" -> {
+                this.cityCrewLocation[0] += 1;
+                this.cityCrewLocation[1] += 1;
+            }
+            case "downleft" -> {
+                this.cityCrewLocation[0] -= 1;
+                this.cityCrewLocation[1] -= 1;
+            }
+            case "downright" -> {
+                this.cityCrewLocation[0] += 1;
+                this.cityCrewLocation[1] -= 1;
+            }
+        }
+    }
 
+    @Override
+    public int[] getCityCenterLocation() {
+        return cityCenterLocation;
+    }
+
+    @Override
+    public int[] getCityCrewLocation() {
+        return cityCrewLocation;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public Map<String, Long> getIdentifiers() {
+        return identifier;
     }
 }
