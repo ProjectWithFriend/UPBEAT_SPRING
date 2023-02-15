@@ -2,6 +2,9 @@ package AST;
 
 import java.util.Map;
 
+import static AST.Node.*;
+import static AST.ASTException.*;
+
 public class BinaryOperationNode extends ExprNode {
     private final ExprNode left;
     private final ExprNode right;
@@ -23,12 +26,7 @@ public class BinaryOperationNode extends ExprNode {
             case "/" -> leftValue / rightValue;
             case "%" -> leftValue % rightValue;
             case "^" -> (long) Math.pow(leftValue, rightValue);
-            default -> throw new RuntimeException("Unknown operator: " + operator);
+            default -> throw new UnknownOperator(operator);
         };
-    }
-
-    @Override
-    public void execute() {
-        //Nothing to do this node can't be executed
     }
 }

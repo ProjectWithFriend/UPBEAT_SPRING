@@ -1,15 +1,20 @@
 package AST;
 
-public class AttackNode extends Node{
-    private final long power;
+import Player.Player;
+import static AST.Node.*;
+import static AST.ASTException.*;
+
+public class AttackNode extends ExecNode {
+    private final ExprNode expression;
     private final String direction;
 
-    public AttackNode(long power, String direction){
-        this.power = power;
+    public AttackNode(ExprNode expression, String direction) {
+        this.expression = expression;
         this.direction = direction;
     }
+
     @Override
-    public void execute() {
-        System.out.println("AttackNode: " + power + " " + direction);
+    public ExecNode execute(Player player) {
+        throw new NotImplemented(); // TODO: implement execution step
     }
 }

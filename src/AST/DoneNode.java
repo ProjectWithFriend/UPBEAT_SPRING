@@ -1,8 +1,12 @@
 package AST;
 
-public class DoneNode extends Node{
+import Player.Player;
+
+import static AST.Node.*;
+
+public class DoneNode extends ExecNode {
     @Override
-    public void execute() {
-        System.out.println("Done");
+    public ExecNode execute(Player player) {
+        return null;
     }
 }
