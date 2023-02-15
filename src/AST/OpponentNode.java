@@ -1,12 +1,13 @@
 package AST;
 
-import Player.Player;
+import java.util.Map;
 
 import static AST.Node.*;
 import static AST.ASTException.*;
 
 public class OpponentNode extends ExprNode {
-    public ExecNode execute(Player player) {
-        throw new NotImplemented(); // TODO: implement execution step
+    @Override
+    public long eval(Map<String, Long> identifiers) {
+        throw new NotImplemented();
     }
 }

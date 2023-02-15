@@ -16,9 +16,9 @@ public class BinaryOperationNode extends ExprNode {
         this.operator = operator;
     }
 
-    public long eval(Map<String, Long> memory) {
-        long leftValue = left.eval(memory);
-        long rightValue = right.eval(memory);
+    public long eval(Map<String, Long> identifiers) {
+        long leftValue = left.eval(identifiers);
+        long rightValue = right.eval(identifiers);
         return switch (operator) {
             case "+" -> leftValue + rightValue;
             case "-" -> leftValue - rightValue;

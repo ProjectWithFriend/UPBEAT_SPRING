@@ -1,8 +1,10 @@
 package AST;
 
 import Player.Player;
+
+import java.util.Map;
+
 import static AST.Node.*;
-import static AST.ASTException.*;
 
 public class AssignmentNode extends ExecNode {
     private final String identifier;
@@ -12,13 +14,10 @@ public class AssignmentNode extends ExecNode {
         this.identifier = identifier;
         this.expression = expression;
     }
-    public String getIdentifier() {
-        return identifier;
-    }
-    public ExprNode getExpression() {
-        return expression;
-    }
+
     public ExecNode execute(Player player) {
-        throw new NotImplemented(); // TODO: implement execution step
+        Map<String, Long> memory = player.getIdentifiers();
+        memory.put(identifier, expression.eval(memory));
+        return next;
     }
 }

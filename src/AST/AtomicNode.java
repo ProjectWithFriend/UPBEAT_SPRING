@@ -7,24 +7,27 @@ import static AST.ASTException.*;
 
 public class AtomicNode extends ExprNode {
     private final int value;
-    private final String identifer;
+    private final String identifier;
 
     public AtomicNode(int value) {
         this.value = value;
-        this.identifer = null;
+        this.identifier = null;
     }
 
-    public AtomicNode(String identifer) {
+    public AtomicNode(String identifier) {
         this.value = 0;
-        this.identifer = identifer;
+        this.identifier = identifier;
     }
 
     @Override
-    public long eval(Map<String, Long> memory) {
-        if (identifer == null) {
+    public long eval(Map<String, Long> identifiers) {
+        if (identifier == null) {
             return value;
         } else {
-            throw new NotImplemented();
+            Long value = identifiers.get(identifier);
+            if (value == null)
+                throw new UndefinedIdentifier(identifier);
+            return value;
         }
     }
 }
