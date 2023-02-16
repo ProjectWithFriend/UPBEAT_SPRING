@@ -1,5 +1,6 @@
 package Player;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerProps implements Player {
@@ -13,6 +14,7 @@ public class PlayerProps implements Player {
     private Map<String,Long> identifier;
 
     public PlayerProps(String name){
+        this.identifier = new HashMap<>();
         this.name = name;
         double budget = 1000;
         this.timeLeft = 0;
