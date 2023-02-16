@@ -1,6 +1,6 @@
 package AST;
 
-import Player.Player;
+import Game.Game;
 
 import static AST.Node.*;
 
@@ -16,10 +16,10 @@ public abstract class ConditionalNode extends ExecNode {
     }
 
     @Override
-    public ExecNode execute(Player player) {
+    public ExecNode execute(Game game) {
         trueNode.next = next;
         falseNode.next = next;
-        if (condition.eval(player.getIdentifiers()) != 0) {
+        if (condition.eval(game.currentPlayer().getIdentifiers()) != 0) {
             return trueNode;
         } else {
             return falseNode;

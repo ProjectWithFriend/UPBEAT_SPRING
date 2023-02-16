@@ -10,4 +10,9 @@ public class OpponentNode extends ExprNode {
     public long eval(Map<String, Long> identifiers) {
         throw new NotImplemented();
     }
+
+    @Override
+    public String toString() {
+        return "opponent";
+    }
 }

@@ -1,6 +1,6 @@
 package AST;
 
-import Player.Player;
+import Game.Game;
 
 import java.util.Map;
 
@@ -15,8 +15,8 @@ public class AssignmentNode extends ExecNode {
         this.expression = expression;
     }
 
-    public ExecNode execute(Player player) {
-        Map<String, Long> memory = player.getIdentifiers();
+    public ExecNode execute(Game game) {
+        Map<String, Long> memory = game.currentPlayer().getIdentifiers();
         memory.put(identifier, expression.eval(memory));
         return next;
     }

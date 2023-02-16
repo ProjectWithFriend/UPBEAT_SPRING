@@ -1,6 +1,6 @@
 package AST;
 
-import Player.Player;
+import Game.Game;
 
 import static AST.Node.*;
 
@@ -12,7 +12,7 @@ public class MoveNode extends ExecNode {
     }
 
     @Override
-    public ExecNode execute(Player player) {
+    public ExecNode execute(Game game) {
         throw new ASTException.NotImplemented(); // TODO: implement execution step
     }
 }

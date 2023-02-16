@@ -29,4 +29,9 @@ public class BinaryOperationNode extends ExprNode {
             default -> throw new UnknownOperator(operator);
         };
     }
+
+    @Override
+    public String toString() {
+        return String.format("(%s %s %s)", left.toString(), operator, right.toString());
+    }
 }

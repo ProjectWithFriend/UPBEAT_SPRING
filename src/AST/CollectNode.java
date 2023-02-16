@@ -1,6 +1,6 @@
 package AST;
 
-import Player.Player;
+import Game.Game;
 
 public class CollectNode extends Node.ExecNode {
     private final ExprNode expression;
@@ -10,7 +10,7 @@ public class CollectNode extends Node.ExecNode {
     }
 
     @Override
-    public ExecNode execute(Player player) {
+    public ExecNode execute(Game game) {
         throw new ASTException.NotImplemented();
     }
 }

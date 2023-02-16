@@ -10,48 +10,32 @@ import java.util.List;
 import static Parser.ParserException.*;
 
 public class GrammarParser implements Parser {
-    //    Plan → Statement+
-    //    Statement → Command | BlockStatement | IfStatement | WhileStatement
-    //    Command → AssignmentStatement | ActionCommand
-    //    AssignmentStatement → <identifier> = Expression
-    //    ActionCommand → done | relocate | MoveCommand | RegionCommand | AttackCommand
-    //    MoveCommand → move Direction
-    //    RegionCommand → invest Expression | collect Expression
-    //    AttackCommand → shoot Direction Expression
-    //    Direction → up | down | upleft | upright | downleft | downright
-    //    BlockStatement → { Statement* }
-    //    IfStatement → if ( Expression ) then Statement else Statement
-    //    WhileStatement → while ( Expression ) Statement
-    //    Expression → Expression + Term | Expression - Term | Term
-    //    Term → Term * Factor | Term / Factor | Term % Factor | Factor
-    //    Factor → Power ^ Factor | Power
-    //    Power → <number> | <identifier> | ( Expression ) | InfoExpression
-    //    InfoExpression → opponent | nearby Direction
+    /* Grammar specification
+    Plan → Statement+
+    Statement → Command | BlockStatement | IfStatement | WhileStatement
+    Command → AssignmentStatement | ActionCommand
+    AssignmentStatement → <identifier> = Expression
+    ActionCommand → done | relocate | MoveCommand | RegionCommand | AttackCommand
+    MoveCommand → move Direction
+    RegionCommand → invest Expression | collect Expression
+    AttackCommand → shoot Direction Expression
+    Direction → up | down | upleft | upright | downleft | downright
+    BlockStatement → { Statement* }
+    IfStatement → if ( Expression ) then Statement else Statement
+    WhileStatement → while ( Expression ) Statement
+    Expression → Expression + Term | Expression - Term | Term
+    Term → Term * Factor | Term / Factor | Term % Factor | Factor
+    Factor → Power ^ Factor | Power
+    Power → <number> | <identifier> | ( Expression ) | InfoExpression
+    InfoExpression → opponent | nearby Direction
+     */
 
     private final Tokenizer tkz;
     private final List<String> commands = Arrays.stream(new String[]{"done", "relocate", "move", "invest", "collect", "shoot"}).toList();
-//    List<Node> allNodes;
 
     public GrammarParser(Tokenizer tkz) {
         this.tkz = tkz;
-//        allNodes = new ArrayList<>();
     }
-
-//    @Override
-//    public void runTree() {
-//        allNodes = reverseList(allNodes);
-//        for (Node node : allNodes) {
-//            node.execute();
-//        }
-//    }
-
-//    private List<Node> reverseList(List<Node> list) {
-//        List<Node> reversedList = new ArrayList<>();
-//        for (int i = list.size() - 1; i >= 0; i--) {
-//            reversedList.add(list.get(i));
-//        }
-//        return reversedList;
-//    }
 
     @Override
     public ExecNode parse() {

@@ -1,15 +1,21 @@
 import AST.Node.*;
+import Game.GameProps;
 import Parser.*;
-import Player.*;
+import Game.*;
 import Tokenizer.IterateTokenizer;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 public class Main {
-    public static void main(String[] args) {
-        Parser parser = new GrammarParser(new IterateTokenizer("x = 5 * 3 y = 3 * 5 x = 1 + y invest 10 collect 100*100"));
+    public static void main(String[] args) throws IOException {
+        String script = Files.readString(Path.of("script.txt"));
+        Parser parser = new GrammarParser(new IterateTokenizer(script));
         ExecNode tree = parser.parse();
-        Player player = new PlayerProps("santa claus");
+        Game game = new GameProps();
         while (tree != null) {
-            tree = tree.execute(player);
+            tree = tree.execute(game);
         }
         return;
     }

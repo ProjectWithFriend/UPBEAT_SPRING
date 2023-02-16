@@ -1,19 +1,20 @@
 package Tokenizer;
 
-public class TokenizerException extends RuntimeException{
+public class TokenizerException extends RuntimeException {
     public TokenizerException(String message) {
         super(message);
     }
 
     public static class NoToken extends TokenizerException {
-        public NoToken() {
-            super("no more token");
+        private static String tailing(String after) {
+            if (after != null)
+                return String.format(", after '%s'", after);
+            else
+                return "";
         }
-    }
 
-    public static class NotMatchToken extends TokenizerException {
-        public NotMatchToken(String expected, String got) {
-            super("Expected " + expected + " but got " + got);
+        public NoToken(String after) {
+            super("expected more token" + tailing(after));
         }
     }
 

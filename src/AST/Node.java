@@ -1,6 +1,6 @@
 package AST;
 
-import Player.Player;
+import Game.Game;
 
 import java.util.Map;
 
@@ -12,6 +12,7 @@ public abstract class Node {
          * @return result of evaluation
          */
         public abstract long eval(Map<String, Long> identifiers);
+        public abstract String toString();
     }
 
     public abstract static class ExecNode extends Node {
@@ -19,10 +20,11 @@ public abstract class Node {
 
         /**
          * execute a node and maybe change state of execution
-         * @param player state of current execution
+         *
+         * @param game current state of game
          * @return next executable node `null` if no more execution
          */
-        public abstract ExecNode execute(Player player);
+        public abstract ExecNode execute(Game game);
     }
 }
 

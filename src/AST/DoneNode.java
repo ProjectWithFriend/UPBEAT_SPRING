@@ -1,12 +1,12 @@
 package AST;
 
-import Player.Player;
+import Game.Game;
 
 import static AST.Node.*;
 
 public class DoneNode extends ExecNode {
     @Override
-    public ExecNode execute(Player player) {
+    public ExecNode execute(Game game) {
         return null;
     }
 }

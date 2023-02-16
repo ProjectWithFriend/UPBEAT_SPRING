@@ -69,4 +69,10 @@ class IterateTokenizerTest {
         assertFalse(tkz.consume("a"));
         assertTrue(tkz.consume("abc"));
     }
+
+    @Test
+    public void testComment() {
+        tkz = new IterateTokenizer("# eiei \n casa\n###########");
+        assertTrue(tkz.consume("casa"));
+    }
 }

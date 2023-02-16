@@ -30,4 +30,9 @@ public class AtomicNode extends ExprNode {
             return value;
         }
     }
+
+    @Override
+    public String toString() {
+        return identifier != null ? identifier : String.valueOf(value);
+    }
 }
