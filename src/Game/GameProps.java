@@ -13,7 +13,7 @@ public class GameProps implements Game {
 
     public GameProps() {
         this.player = new PlayerProps("lungtu");
-        this.regi0n = new RegionProps(0, 0);
+        this.regi0n = new RegionProps(0);
         this.territory = GameInitialize.CreateGame();
     }
 
