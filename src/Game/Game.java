@@ -1,12 +1,18 @@
 package Game;
 
-import Player.Player;
-import Region.Region;
-
-import java.util.List;
+import java.util.Map;
 
 public interface Game {
-    Player currentPlayer();
-    Region getRegion();
-    List<Region> getTerritory();
+    Map<String, Long> getIdentifiers();
+
+    void attack(Direction direction, long value);
+
+    void collect(long value);
+
+    void invest(long eval);
+
+    void relocate();
+
+    long nearby(Direction direction);
+
 }

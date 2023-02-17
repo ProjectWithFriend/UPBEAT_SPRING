@@ -1,13 +1,14 @@
 package AST;
 
 import Game.Game;
+import Game.Direction;
 
 import static AST.Node.*;
 
 public class MoveNode extends ExecNode {
-    private final String direction;
+    private final Direction direction;
 
-    public MoveNode(String direction) {
+    public MoveNode(Direction direction) {
         this.direction = direction;
     }
 

@@ -1,21 +1,25 @@
 package AST;
 
 import Game.Game;
+import Game.Direction;
 
 import static AST.Node.*;
-import static AST.ASTException.*;
 
 public class AttackNode extends ExecNode {
     private final ExprNode expression;
-    private final String direction;
+    private final Direction direction;
 
-    public AttackNode(ExprNode expression, String direction) {
+    public AttackNode(ExprNode expression, Direction direction) {
         this.expression = expression;
         this.direction = direction;
     }
 
     @Override
     public ExecNode execute(Game game) {
-        throw new NotImplemented(); // TODO: implement execution step
+        game.attack(
+                direction,
+                expression.eval(game)
+        );
+        return next;
     }
 }

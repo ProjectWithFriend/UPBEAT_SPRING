@@ -1,13 +1,13 @@
 package AST;
 
-import java.util.Map;
+import Game.Game;
 
 import static AST.Node.*;
 import static AST.ASTException.*;
 
 public class OpponentNode extends ExprNode {
     @Override
-    public long eval(Map<String, Long> identifiers) {
+    public long eval(Game game) {
         throw new NotImplemented();
     }
 

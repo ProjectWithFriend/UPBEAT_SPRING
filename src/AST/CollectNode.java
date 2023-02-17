@@ -11,6 +11,7 @@ public class CollectNode extends Node.ExecNode {
 
     @Override
     public ExecNode execute(Game game) {
-        throw new ASTException.NotImplemented();
+        game.collect(expression.eval(game));
+        return next;
     }
 }

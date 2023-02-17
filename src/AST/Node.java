@@ -2,16 +2,15 @@ package AST;
 
 import Game.Game;
 
-import java.util.Map;
-
 public abstract class Node {
     public abstract static class ExprNode extends Node {
         /**
          * evaluate node for a result
-         * @param identifiers identifiers for evaluation (variables)
+         *
+         * @param game identifiers for evaluation (variables)
          * @return result of evaluation
          */
-        public abstract long eval(Map<String, Long> identifiers);
+        public abstract long eval(Game game);
         public abstract String toString();
     }
 

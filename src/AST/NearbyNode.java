@@ -1,20 +1,20 @@
 package AST;
 
-import java.util.Map;
+import Game.Direction;
+import Game.Game;
 
 import static AST.Node.*;
-import static AST.ASTException.*;
 
 public class NearbyNode extends ExprNode {
-    private final String direction;
+    private final Direction direction;
 
-    public NearbyNode(String direction) {
+    public NearbyNode(Direction direction) {
         this.direction = direction;
     }
 
     @Override
-    public long eval(Map<String, Long> identifiers) {
-        throw new NotImplemented();
+    public long eval(Game game) {
+        return game.nearby(direction);
     }
 
     @Override

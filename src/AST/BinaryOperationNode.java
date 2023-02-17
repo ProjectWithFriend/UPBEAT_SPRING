@@ -1,6 +1,6 @@
 package AST;
 
-import java.util.Map;
+import Game.Game;
 
 import static AST.Node.*;
 import static AST.ASTException.*;
@@ -16,9 +16,9 @@ public class BinaryOperationNode extends ExprNode {
         this.operator = operator;
     }
 
-    public long eval(Map<String, Long> identifiers) {
-        long leftValue = left.eval(identifiers);
-        long rightValue = right.eval(identifiers);
+    public long eval(Game game) {
+        long leftValue = left.eval(game);
+        long rightValue = right.eval(game);
         return switch (operator) {
             case "+" -> leftValue + rightValue;
             case "-" -> leftValue - rightValue;

@@ -11,6 +11,7 @@ public class InvestNode extends Node.ExecNode {
 
     @Override
     public ExecNode execute(Game game) {
-        throw new ASTException.NotImplemented();
+        game.invest(expression.eval(game));
+        return next;
     }
 }

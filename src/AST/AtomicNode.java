@@ -1,6 +1,6 @@
 package AST;
 
-import java.util.Map;
+import Game.Game;
 
 import static AST.Node.*;
 import static AST.ASTException.*;
@@ -20,11 +20,11 @@ public class AtomicNode extends ExprNode {
     }
 
     @Override
-    public long eval(Map<String, Long> identifiers) {
+    public long eval(Game game) {
         if (identifier == null) {
             return value;
         } else {
-            Long value = identifiers.get(identifier);
+            Long value = game.getIdentifiers().get(identifier);
             if (value == null)
                 throw new UndefinedIdentifier(identifier);
             return value;

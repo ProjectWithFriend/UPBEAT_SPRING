@@ -19,7 +19,7 @@ public abstract class ConditionalNode extends ExecNode {
     public ExecNode execute(Game game) {
         trueNode.next = next;
         falseNode.next = next;
-        if (condition.eval(game.currentPlayer().getIdentifiers()) != 0) {
+        if (condition.eval(game) != 0) {
             return trueNode;
         } else {
             return falseNode;

@@ -20,7 +20,7 @@ public class WhileNode extends ConditionalNode {
 
     @Override
     public ExecNode execute(Game game) {
-        if (super.condition.eval(game.currentPlayer().getIdentifiers()) != 0) {
+        if (super.condition.eval(game) != 0) {
             ExecNode last = getLastNode(trueNode);
             if (last != this)
                 last.next = this;

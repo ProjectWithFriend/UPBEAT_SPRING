@@ -2,6 +2,7 @@ package Parser;
 
 import AST.*;
 import AST.Node.*;
+import Game.Direction;
 import Tokenizer.Tokenizer;
 
 import java.util.Arrays;
@@ -31,7 +32,9 @@ public class GrammarParser implements Parser {
      */
 
     private final Tokenizer tkz;
-    private final List<String> commands = Arrays.stream(new String[]{"done", "relocate", "move", "invest", "collect", "shoot"}).toList();
+    private final List<String> commands = Arrays.stream(
+            new String[]{"done", "relocate", "move", "invest", "collect", "shoot"}
+    ).toList();
 
     public GrammarParser(Tokenizer tkz) {
         this.tkz = tkz;
@@ -136,7 +139,7 @@ public class GrammarParser implements Parser {
     }
 
     private ExecNode parseShootCommand() {
-        String direction = parseDirection();
+        Direction direction = parseDirection();
         ExprNode expression = parseExpression();
         return new AttackNode(expression, direction);
     }
@@ -201,7 +204,7 @@ public class GrammarParser implements Parser {
             return new OpponentNode();
         } else if (tkz.peek("nearby")) {
             tkz.consume();
-            String direction = parseDirection();
+            Direction direction = parseDirection();
             return new NearbyNode(direction);
         } else {
             throw new InvalidInfoExpression(tkz.peek());
@@ -210,14 +213,19 @@ public class GrammarParser implements Parser {
 
     private ExecNode parseMoveCommand() {
         tkz.consume();
-        String direction = parseDirection();
+        Direction direction = parseDirection();
         return new MoveNode(direction);
     }
 
-    private String parseDirection() {
+    private Direction parseDirection() {
         String direction = tkz.consume();
         return switch (direction) {
-            case "up", "down", "upleft", "upright", "downleft", "downright" -> direction;
+            case "up" -> Direction.Up;
+            case "down" -> Direction.Down;
+            case "upleft" -> Direction.UpLeft;
+            case "upright" -> Direction.UpRight;
+            case "downleft" -> Direction.DownLeft;
+            case "downright" -> Direction.DownRight;
             default -> throw new InvalidDirection(direction);
         };
     }
