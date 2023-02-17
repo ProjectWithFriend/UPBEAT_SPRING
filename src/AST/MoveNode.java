@@ -14,6 +14,7 @@ public class MoveNode extends ExecNode {
 
     @Override
     public ExecNode execute(Game game) {
-        throw new ASTException.NotImplemented(); // TODO: implement execution step
+        game.move(direction);
+        return next;
     }
 }

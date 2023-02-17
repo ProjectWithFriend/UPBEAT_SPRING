@@ -15,4 +15,7 @@ public interface Game {
 
     long nearby(Direction direction);
 
+    void move(Direction direction);
+
+    long opponent();
 }

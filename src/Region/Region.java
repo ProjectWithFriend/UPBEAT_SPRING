@@ -5,6 +5,6 @@ public interface Region {
     double getBudget();
     void updateBudget(double amount);
     void updateOwner(String newOwner);
-    int[] getLocation();
+    int getLocation();
     int getNearby();
 }

@@ -37,6 +37,8 @@ public class GrammarParser implements Parser {
     ).toList();
 
     public GrammarParser(Tokenizer tkz) {
+        if (!tkz.hasNext())
+            throw new StatementRequired();
         this.tkz = tkz;
     }
 

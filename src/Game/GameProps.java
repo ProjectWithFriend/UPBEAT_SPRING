@@ -16,38 +16,39 @@ public class GameProps implements Game {
 
     public GameProps() {
         this.player = new PlayerProps("lungtu");
-        this.regi0n = new RegionProps(0, 0);
+        this.regi0n = new RegionProps(0);
         this.territory = GameInitialize.CreateGame();
         this.identifiers = new HashMap<>();
     }
 
     @Override
     public void collect(long value) {
-
+        throw new GameException.NotImplemented();
     }
 
     @Override
     public void invest(long eval) {
-
+        throw new GameException.NotImplemented();
     }
 
     @Override
     public void relocate() {
-
+        throw new GameException.NotImplemented();
     }
 
     @Override
     public long nearby(Direction direction) {
-        return switch (direction) {
-            case Up -> 111;
-            case Down -> 222;
-            case Left -> 333;
-            case Right -> 444;
-            case UpLeft -> 555;
-            case UpRight -> 666;
-            case DownLeft -> 777;
-            case DownRight -> 888;
-        };
+        throw new GameException.NotImplemented();
+    }
+
+    @Override
+    public long opponent() {
+        throw new GameException.NotImplemented();
+    }
+
+    @Override
+    public void move(Direction direction) {
+        throw new GameException.NotImplemented();
     }
 
     @Override
@@ -57,6 +58,6 @@ public class GameProps implements Game {
 
     @Override
     public void attack(Direction direction, long value) {
-
+        throw new GameException.NotImplemented();
     }
 }

@@ -2,12 +2,12 @@ package Region;
 
 
 public class RegionProps implements Region {
-    private int[] location;
+    private int location;
     private double budget;
     private String owner;
 
-    public RegionProps(int x,int y){
-        this.location = new int[]{x,y};
+    public RegionProps(int location){
+        this.location = location;
         this.budget = 1000;
         this.owner = "None";
     }
@@ -33,7 +33,7 @@ public class RegionProps implements Region {
     }
 
     @Override
-    public int[] getLocation() {
+    public int getLocation() {
         return this.location;
     }
 

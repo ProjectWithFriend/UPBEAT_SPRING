@@ -26,4 +26,7 @@ public abstract class ParserException extends RuntimeException {
             super(String.format("invalid info expression '%s'", exr));
         }
     }
+    public static class StatementRequired extends ParserException {
+        public StatementRequired() {super("at least one statement required");}
+    }
 }

@@ -8,7 +8,7 @@ import static AST.ASTException.*;
 public class OpponentNode extends ExprNode {
     @Override
     public long eval(Game game) {
-        throw new NotImplemented();
+        return game.opponent();
     }
 
     @Override
