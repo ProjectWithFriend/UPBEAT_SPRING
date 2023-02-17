@@ -1,7 +1,7 @@
 package Game;
 
-import Region.Region;
-
+import Region.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -20,7 +20,7 @@ public class GameInitialize {
     private final double max_dep = 1000000; //maximum deposit for each region
     private final double interest_pct= 5; //interest percentage of budget in each region
 
-    public List<Region> territory;
+    public static List<Region> territory;
 
 
     public static void loadConfig(){
@@ -28,8 +28,10 @@ public class GameInitialize {
     }
 
     public static List<Region> CreateGame(){
-        //TODO: - Create Territory
-        //      - set each filed same as config file
-        return null;
+        territory = new ArrayList<Region>();
+        for(int i = 0 ; i < row*col ; i++){
+            territory.add(new RegionProps(i));
+        }
+        return territory;
     }
 }
