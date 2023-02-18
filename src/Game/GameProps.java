@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 public class GameProps implements Game {
-    private final Player player;
-    private final Region regi0n;
-
+    private final Player player1;
+    private final Player player2;
     private final List<Region> territory;
     private final Map<String, Long> identifiers;
 
     public GameProps() {
-        this.player = new PlayerProps("lungtu");
-        this.regi0n = new RegionProps(0);
-        this.territory = GameInitialize.CreateGame();
+        //Initialize the game including the territory and players
+        this.player1 = GameInitialize.CreatePlayer("Player1");
+        this.player2 = GameInitialize.CreatePlayer("Player2");
+        this.territory = GameInitialize.CreateTerritory();
         this.identifiers = new HashMap<>();
     }
 

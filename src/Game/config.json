@@ -1,6 +1,6 @@
 {
-  "m": 10,
-  "n": 8,
+  "row": 10,
+  "col": 8,
   "init_plan_min": 10,
   "init_plan_sec": 30,
   "init_budget": 5000,

@@ -5,22 +5,22 @@ import java.util.Map;
 
 public class PlayerProps implements Player {
     String name;
-    private int[] cityCenterLocation;
-    private final int[] cityCrewLocation;
+    private int cityCenterLocation;
+    private int cityCrewLocation;
     private double actionBudget;
     private double budget;
     private double timeLeft;
     private boolean alive;
     private Map<String,Long> identifier;
 
-    public PlayerProps(String name){
+    public PlayerProps(String name,double budget,double centerDeposit){
         this.identifier = new HashMap<>();
         this.name = name;
-        double budget = 1000;
+        this.budget = budget;
         this.timeLeft = 0;
         this.alive = true;
-        this.cityCenterLocation = new int[]{};
-        this.cityCrewLocation = new int[]{};
+        this.cityCenterLocation = 0;
+        this.cityCrewLocation = 0;
     }
 
     @Override
@@ -45,35 +45,17 @@ public class PlayerProps implements Player {
 
     @Override
     public void moveCityCrew(String direction) {
-        switch (direction) { //TODO might be wrong
-            case "up" -> this.cityCrewLocation[1] += 1;
-            case "down" -> this.cityCrewLocation[1] -= 1;
-            case "upleft" -> {
-                this.cityCrewLocation[0] -= 1;
-                this.cityCrewLocation[1] += 1;
-            }
-            case "upright" -> {
-                this.cityCrewLocation[0] += 1;
-                this.cityCrewLocation[1] += 1;
-            }
-            case "downleft" -> {
-                this.cityCrewLocation[0] -= 1;
-                this.cityCrewLocation[1] -= 1;
-            }
-            case "downright" -> {
-                this.cityCrewLocation[0] += 1;
-                this.cityCrewLocation[1] -= 1;
-            }
+        switch (direction) { //TODO : implement this method
         }
     }
 
     @Override
-    public int[] getCityCenterLocation() {
+    public int getCityCenterLocation() {
         return cityCenterLocation;
     }
 
     @Override
-    public int[] getCityCrewLocation() {
+    public int getCityCrewLocation() {
         return cityCrewLocation;
     }
 
