@@ -1,4 +1,4 @@
-package com.example.springtest.CorsConfiguration;
+package com.example.springtest.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
