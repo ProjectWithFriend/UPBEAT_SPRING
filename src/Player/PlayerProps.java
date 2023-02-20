@@ -1,26 +1,26 @@
 package Player;
 
+import Game.Direction;
+import Region.Region;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerProps implements Player {
-    String name;
-    private int cityCenterLocation;
-    private int cityCrewLocation;
-    private double actionBudget;
-    private double budget;
-    private double timeLeft;
-    private boolean alive;
-    private Map<String,Long> identifier;
+    private final long id;
+    private final String name;
+    private Region cityCenter;
+    private Region cityCrew;
+    private long budget;
+    private final Map<String, Long> identifier;
 
-    public PlayerProps(String name,double budget,double centerDeposit){
-        this.identifier = new HashMap<>();
+    public PlayerProps(long id, String name, long budget, Region cityCenter) {
+        this.id = id;
         this.name = name;
+        this.identifier = new HashMap<>();
         this.budget = budget;
-        this.timeLeft = 0;
-        this.alive = true;
-        this.cityCenterLocation = 0;
-        this.cityCrewLocation = 0;
+        this.cityCenter = cityCenter;
+        this.cityCrew = cityCenter;
     }
 
     @Override
@@ -29,39 +29,38 @@ public class PlayerProps implements Player {
     }
 
     @Override
-    public long attack(String direction) {
-        return 0;
+    public long getBudget() {
+        return budget;
     }
 
     @Override
-    public double getBudget() {
-        return 0;
-    }
-
-    @Override
-    public void updateBudget(double amount) {
+    public void updateBudget(long amount) {
         this.budget += amount;
     }
 
     @Override
-    public void moveCityCrew(String direction) {
-        switch (direction) { //TODO : implement this method
-        }
+    public void moveCityCrew(Direction direction) {
+
     }
 
     @Override
-    public int getCityCenterLocation() {
-        return cityCenterLocation;
+    public int getCityCenter() {
+        return cityCenter.getLocation();
     }
 
     @Override
-    public int getCityCrewLocation() {
-        return cityCrewLocation;
+    public int getCityCrew() {
+        return cityCrew.getLocation();
     }
 
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public long getID() {
+        return id;
     }
 
     @Override

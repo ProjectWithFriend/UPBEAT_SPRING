@@ -24,10 +24,21 @@ public class AtomicNode extends ExprNode {
         if (identifier == null) {
             return value;
         } else {
+            Long specialValue = game.getSpecialIdentifiers().get(identifier);
+            if (specialValue != null)
+                return specialValue;
             Long value = game.getIdentifiers().get(identifier);
             if (value == null)
                 throw new UndefinedIdentifier(identifier);
             return value;
+        }
+    }
+
+    public long eval() {
+        if (identifier == null) {
+            return value;
+        } else {
+            throw new IntegerRequired(identifier);
         }
     }
 

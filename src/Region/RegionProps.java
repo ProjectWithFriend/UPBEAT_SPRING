@@ -1,35 +1,36 @@
 package Region;
 
-
+import Game.GameException;
+import Player.*;
 public class RegionProps implements Region {
     private int location;
-    private double budget;
-    private String owner;
+    private long deposit;
+    private Player owner;
 
     public RegionProps(int location){
         this.location = location;
-        this.budget = 1000;
-        this.owner = "None";
+        this.deposit = 0;
+        this.owner = null;
     }
 
     @Override
-    public String getOwner() {
+    public Player getOwner() {
         return this.owner;
     }
 
     @Override
-    public double getBudget() {
-        return this.budget;
+    public long getDeposit() {
+        return deposit;
     }
 
     @Override
-    public void updateBudget(double amount) {
-        this.budget += amount;
+    public void updateDeposit(long amount) {
+        this.deposit += amount;
     }
 
     @Override
-    public void updateOwner(String newOwner) {
-        this.owner = newOwner;
+    public void updateOwner(Player owner) {
+        this.owner = owner;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class RegionProps implements Region {
     }
 
     @Override
-    public int getNearby() {
-        return Integer.MAX_VALUE; //TODO To remove this in future
+    public long getNearby() {
+        throw new GameException.NotImplemented();
     }
 }

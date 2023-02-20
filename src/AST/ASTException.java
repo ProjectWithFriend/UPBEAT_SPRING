@@ -4,6 +4,7 @@ public abstract class ASTException extends RuntimeException {
     protected ASTException() {
         super();
     }
+
     protected ASTException(String m) {
         super(m);
     }
@@ -23,6 +24,12 @@ public abstract class ASTException extends RuntimeException {
     public static class UndefinedIdentifier extends ASTException {
         public UndefinedIdentifier(String iden) {
             super(String.format("identifer '%s' is not defined", iden));
+        }
+    }
+
+    public static class IntegerRequired extends ASTException {
+        public IntegerRequired(String iden) {
+            super(String.format("integer required instead of '%s' ", iden));
         }
     }
 }

@@ -1,8 +1,10 @@
 package AST;
 
 import Game.Game;
+import AST.ASTException.*;
 
 public class WhileNode extends ConditionalNode {
+    private int executionCount = 0;
 
     public WhileNode(ExprNode expression, ExecNode statements) {
         super(expression, statements, null);
@@ -20,10 +22,13 @@ public class WhileNode extends ConditionalNode {
 
     @Override
     public ExecNode execute(Game game) {
-        if (super.condition.eval(game) != 0) {
+        if (super.condition.eval(game) > 0) {
+            if (executionCount >= 10000)
+                return next;
             ExecNode last = getLastNode(trueNode);
             if (last != this)
                 last.next = this;
+            executionCount++;
             return trueNode;
         }
         return next;

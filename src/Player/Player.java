@@ -1,15 +1,25 @@
 package Player;
 
+import Game.Direction;
+
 import java.util.Map;
 
 public interface Player {
     boolean isAlive();
-    long attack(String direction);
-    double getBudget();
-    void updateBudget(double amount);
-    void moveCityCrew(String direction);
-    int getCityCenterLocation();
-    int getCityCrewLocation();
+
+    long getBudget();
+
+    void updateBudget(long amount);
+
+    void moveCityCrew(Direction direction);
+
+    int getCityCenter();
+
+    int getCityCrew();
+
     String getName();
-    Map<String,Long> getIdentifiers();
+
+    long getID();
+
+    Map<String, Long> getIdentifiers();
 }

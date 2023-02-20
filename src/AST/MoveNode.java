@@ -14,7 +14,6 @@ public class MoveNode extends ExecNode {
 
     @Override
     public ExecNode execute(Game game) {
-        game.move(direction);
-        return next;
+        return game.move(direction) ? next : null;
     }
 }

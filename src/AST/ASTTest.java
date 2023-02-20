@@ -2,9 +2,10 @@ package AST;
 
 import Game.*;
 import AST.Node.*;
-import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +15,7 @@ public class ASTTest {
         Game game;
         ExprNode expression;
         ExecNode node, trueNode, falseNode;
-        game = new GameProps();
+        game = new MockupGame();
         trueNode = new DoneNode();
         falseNode = new DoneNode();
 
@@ -32,11 +33,11 @@ public class ASTTest {
 
         expression = new AtomicNode(-1);
         node = new IfElseNode(expression, trueNode, falseNode);
-        assertEquals(trueNode, node.execute(game));
+        assertEquals(falseNode, node.execute(game));
 
         expression = new AtomicNode(-2);
         node = new IfElseNode(expression, trueNode, falseNode);
-        assertEquals(trueNode, node.execute(game));
+        assertEquals(falseNode, node.execute(game));
     }
 
     @Test
@@ -44,7 +45,7 @@ public class ASTTest {
         Game game;
         ExprNode expression;
         ExecNode node, trueNode, nextNode;
-        game = new GameProps();
+        game = new MockupGame();
         trueNode = new DoneNode();
         nextNode = new DoneNode();
 
@@ -63,17 +64,17 @@ public class ASTTest {
 
         expression = new AtomicNode(-1);
         node = new WhileNode(expression, trueNode);
-        assertEquals(trueNode, node.execute(game));
+        assertNull(node.execute(game));
 
         expression = new AtomicNode(-2);
         node = new WhileNode(expression, trueNode);
-        assertEquals(trueNode, node.execute(game));
+        assertNull(node.execute(game));
     }
 
     @Test
     public void testAssignmentNode() {
         String key;
-        Game game = new GameProps();
+        Game game = new MockupGame();
         ExecNode node;
         Map<String, Long> map = game.getIdentifiers();
 
@@ -96,7 +97,7 @@ public class ASTTest {
     @Test
     public void testAtomicNode() {
         String key;
-        Game game = new GameProps();
+        Game game = new MockupGame();
         ExecNode node;
         Map<String, Long> map = game.getIdentifiers();
 
@@ -114,5 +115,18 @@ public class ASTTest {
         node = new AssignmentNode(key, new AtomicNode(1));
         node.execute(game);
         assertEquals(1, map.get(key));
+    }
+
+    @Test
+    public void testWhileNode() {
+        Game game = new MockupGame();
+        ExecNode node;
+        node = new WhileNode(new AtomicNode(1), null);
+        node.next = new DoneNode();
+        while (node != null) {
+            node = node.execute(game);
+            if (!(node instanceof WhileNode) && node != null)
+                assertInstanceOf(DoneNode.class, node);
+        }
     }
 }

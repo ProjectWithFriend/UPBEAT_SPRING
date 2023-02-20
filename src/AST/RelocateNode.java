@@ -8,6 +8,6 @@ public class RelocateNode extends ExecNode {
     @Override
     public ExecNode execute(Game game) {
         game.relocate();
-        return next;
+        return null;
     }
 }
