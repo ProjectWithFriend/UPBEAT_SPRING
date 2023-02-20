@@ -1,26 +1,26 @@
 package Player;
 
+import Game.Direction;
+import Region.Region;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerProps implements Player {
-    String name;
-    private int[] cityCenterLocation;
-    private final int[] cityCrewLocation;
-    private double actionBudget;
-    private double budget;
-    private double timeLeft;
-    private boolean alive;
-    private Map<String,Long> identifier;
+    private final long id;
+    private final String name;
+    private Region cityCenter;
+    private Region cityCrew;
+    private long budget;
+    private final Map<String, Long> identifier;
 
-    public PlayerProps(String name){
-        this.identifier = new HashMap<>();
+    public PlayerProps(long id, String name, long budget, Region cityCenter) {
+        this.id = id;
         this.name = name;
-        double budget = 1000;
-        this.timeLeft = 0;
-        this.alive = true;
-        this.cityCenterLocation = new int[]{};
-        this.cityCrewLocation = new int[]{};
+        this.identifier = new HashMap<>();
+        this.budget = budget;
+        this.cityCenter = cityCenter;
+        this.cityCrew = cityCenter;
     }
 
     @Override
@@ -29,57 +29,38 @@ public class PlayerProps implements Player {
     }
 
     @Override
-    public long attack(String direction) {
-        return 0;
+    public long getBudget() {
+        return budget;
     }
 
     @Override
-    public double getBudget() {
-        return 0;
-    }
-
-    @Override
-    public void updateBudget(double amount) {
+    public void updateBudget(long amount) {
         this.budget += amount;
     }
 
     @Override
-    public void moveCityCrew(String direction) {
-        switch (direction) { //TODO might be wrong
-            case "up" -> this.cityCrewLocation[1] += 1;
-            case "down" -> this.cityCrewLocation[1] -= 1;
-            case "upleft" -> {
-                this.cityCrewLocation[0] -= 1;
-                this.cityCrewLocation[1] += 1;
-            }
-            case "upright" -> {
-                this.cityCrewLocation[0] += 1;
-                this.cityCrewLocation[1] += 1;
-            }
-            case "downleft" -> {
-                this.cityCrewLocation[0] -= 1;
-                this.cityCrewLocation[1] -= 1;
-            }
-            case "downright" -> {
-                this.cityCrewLocation[0] += 1;
-                this.cityCrewLocation[1] -= 1;
-            }
-        }
+    public void moveCityCrew(Direction direction) {
+
     }
 
     @Override
-    public int[] getCityCenterLocation() {
-        return cityCenterLocation;
+    public int getCityCenter() {
+        return cityCenter.getLocation();
     }
 
     @Override
-    public int[] getCityCrewLocation() {
-        return cityCrewLocation;
+    public int getCityCrew() {
+        return cityCrew.getLocation();
     }
 
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public long getID() {
+        return id;
     }
 
     @Override

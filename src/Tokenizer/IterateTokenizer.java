@@ -5,10 +5,12 @@ public class IterateTokenizer implements Tokenizer {
     private String next;
     private String prev;
     private int pos;
+    private int line;
 
     public IterateTokenizer(String src) {
         this.src = src;
         pos = 0;
+        line = 1;
         computeNext();
     }
 
@@ -58,6 +60,11 @@ public class IterateTokenizer implements Tokenizer {
         }
     }
 
+    @Override
+    public int getLine() {
+        return line;
+    }
+
     private void processSingleLineComment() {
         while (pos < src.length() && src.charAt(pos) != '\n') {
             pos++;
@@ -67,11 +74,16 @@ public class IterateTokenizer implements Tokenizer {
     private boolean ignoreCharacter(char c) {
         return Character.isWhitespace(c) || c == '#' || c == '"';
     }
+    private boolean isLetter(char c) {
+        return Character.isLetter(c) || c == '_';
+    }
 
     private void computeNext() {
         if (src == null) return;
         StringBuilder sb = new StringBuilder();
         while (pos < src.length() && ignoreCharacter(src.charAt(pos))) {
+            if (src.charAt(pos) == '\n')
+                line++;
             if (src.charAt(pos) == '#')
                 processSingleLineComment();
             else
@@ -89,8 +101,8 @@ public class IterateTokenizer implements Tokenizer {
                 sb.append(src.charAt(pos));
                 pos++;
             }
-        } else if (Character.isLetter(c)) {
-            while (pos < src.length() && Character.isLetter(src.charAt(pos))) {
+        } else if (isLetter(c) || c == '_') {
+            while (pos < src.length() && isLetter(src.charAt(pos))) {
                 sb.append(src.charAt(pos));
                 pos++;
             }

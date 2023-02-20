@@ -35,10 +35,13 @@ public class GrammarParser implements Parser {
     private final List<String> commands = Arrays.stream(
             new String[]{"done", "relocate", "move", "invest", "collect", "shoot"}
     ).toList();
+    private final List<String> reserved = Arrays.stream(
+            new String[]{"collect", "done", "down", "downleft", "downright", "else", "if", "invest", "move", "nearby", "opponent", "relocate", "shoot", "then", "up", "upleft", "upright", "while"}
+    ).toList();
 
     public GrammarParser(Tokenizer tkz) {
         if (!tkz.hasNext())
-            throw new StatementRequired();
+            throw new StatementRequired(tkz.getLine());
         this.tkz = tkz;
     }
 
@@ -119,10 +122,12 @@ public class GrammarParser implements Parser {
 
     private ExecNode parseAssignmentStatement() {
         String identifier = tkz.consume();
+        if (reserved.contains(identifier))
+            throw new ReservedIdentifier(identifier, tkz.getLine());
         if (tkz.peek("="))
             tkz.consume();
         else
-            throw new CommandNotFound(identifier);
+            throw new CommandNotFound(identifier, tkz.getLine());
         ExprNode expression = parseExpression();
         return new AssignmentNode(identifier, expression);
     }
@@ -136,7 +141,7 @@ public class GrammarParser implements Parser {
             case "invest" -> parseInvestCommand();
             case "collect" -> parseCollectCommand();
             case "shoot" -> parseShootCommand();
-            default -> throw new CommandNotImplemented(command);
+            default -> throw new CommandNotImplemented(command, tkz.getLine());
         };
     }
 
@@ -209,12 +214,11 @@ public class GrammarParser implements Parser {
             Direction direction = parseDirection();
             return new NearbyNode(direction);
         } else {
-            throw new InvalidInfoExpression(tkz.peek());
+            throw new InvalidInfoExpression(tkz.peek(), tkz.getLine());
         }
     }
 
     private ExecNode parseMoveCommand() {
-        tkz.consume();
         Direction direction = parseDirection();
         return new MoveNode(direction);
     }
@@ -228,7 +232,7 @@ public class GrammarParser implements Parser {
             case "upright" -> Direction.UpRight;
             case "downleft" -> Direction.DownLeft;
             case "downright" -> Direction.DownRight;
-            default -> throw new InvalidDirection(direction);
+            default -> throw new InvalidDirection(direction, tkz.getLine());
         };
     }
 }

@@ -1,10 +1,17 @@
 package Region;
 
+import Player.*;
+
 public interface Region {
-    String getOwner();
-    double getBudget();
-    void updateBudget(double amount);
-    void updateOwner(String newOwner);
+    Player getOwner();
+
+    long getDeposit();
+
+    void updateDeposit(long amount);
+
+    void updateOwner(Player owner);
+
     int getLocation();
-    int getNearby();
+
+    long getNearby();
 }

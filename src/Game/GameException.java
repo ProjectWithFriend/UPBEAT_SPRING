@@ -2,7 +2,7 @@ package Game;
 
 import AST.ASTException;
 
-public class GameException extends RuntimeException {
+public abstract class GameException extends RuntimeException {
     public static class NotImplemented extends ASTException {
         public NotImplemented() {
             StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
@@ -15,5 +15,22 @@ public class GameException extends RuntimeException {
         private NotImplemented(String m) {
             super(m);
         }
+    }
+
+    public static class InvalidConfiguration extends ASTException {
+        public InvalidConfiguration(String m) {
+            super(m);
+        }
+
+        public InvalidConfiguration() {
+            super();
+        }
+    }
+
+    public static class InvalidValue extends ASTException {
+        public InvalidValue(long m) {
+            super(String.format("invalid value '%d'", m));
+        }
+
     }
 }
