@@ -3,6 +3,9 @@ package Parser;
 import AST.Node;
 
 public interface Parser {
-    Node parse();
-    void runTree();
+    /**
+     * parse given data to AST structure
+     * @return first executable node of AST
+     */
+    Node.ExecNode parse();
 }

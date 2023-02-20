@@ -1,13 +1,8 @@
-import Parser.GrammarParser;
-import Parser.Parser;
-import Tokenizer.IterateTokenizer;
-import AST.Node;
+import org.junit.jupiter.api.Nested;
 
+@Nested
 public class Main {
     public static void main(String[] args) {
-        Parser parser = new GrammarParser(new IterateTokenizer("if(1)then done else relocate"));
-        Node tree = parser.parse();
-        parser.runTree();
-        //Test Something
+        System.out.println("JUnit5 required");
     }
 }

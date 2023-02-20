@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class IterateTokenizerTest {
+public class IterateTokenizerTest {
     private IterateTokenizer tkz;
 
     @Test
@@ -68,5 +68,11 @@ class IterateTokenizerTest {
         tkz = new IterateTokenizer("abc");
         assertFalse(tkz.consume("a"));
         assertTrue(tkz.consume("abc"));
+    }
+
+    @Test
+    public void testComment() {
+        tkz = new IterateTokenizer("# eiei \n casa\n###########");
+        assertTrue(tkz.consume("casa"));
     }
 }
