@@ -1,15 +1,25 @@
 package AST;
 
-public class AttackNode extends Node{
-    private final long power;
-    private final String direction;
+import Game.Game;
+import Game.Direction;
 
-    public AttackNode(long power, String direction){
-        this.power = power;
+import static AST.Node.*;
+
+public class AttackNode extends ExecNode {
+    private final ExprNode expression;
+    private final Direction direction;
+
+    public AttackNode(ExprNode expression, Direction direction) {
+        this.expression = expression;
         this.direction = direction;
     }
+
     @Override
-    public void execute() {
-        System.out.println("AttackNode: " + power + " " + direction);
+    public ExecNode execute(Game game) {
+        game.attack(
+                direction,
+                expression.eval(game)
+        );
+        return next;
     }
 }

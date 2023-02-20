@@ -1,8 +1,13 @@
 package AST;
 
-public class RelocateNode extends Node {
+import Game.Game;
+
+import static AST.Node.*;
+
+public class RelocateNode extends ExecNode {
     @Override
-    public void execute() {
-        System.out.println("Relocate");
+    public ExecNode execute(Game game) {
+        game.relocate();
+        return next;
     }
 }

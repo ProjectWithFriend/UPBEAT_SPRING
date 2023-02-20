@@ -1,12 +1,20 @@
 package AST;
 
-public class MoveNode extends Node{
-    private String direction;
+import Game.Game;
+import Game.Direction;
 
-    public MoveNode(String direction){
+import static AST.Node.*;
+
+public class MoveNode extends ExecNode {
+    private final Direction direction;
+
+    public MoveNode(Direction direction) {
         this.direction = direction;
     }
-    public void execute(){
-        System.out.println("Move " + direction);
+
+    @Override
+    public ExecNode execute(Game game) {
+        game.move(direction);
+        return next;
     }
 }

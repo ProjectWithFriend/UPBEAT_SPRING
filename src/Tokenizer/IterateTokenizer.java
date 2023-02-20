@@ -1,7 +1,9 @@
 package Tokenizer;
 
-public class IterateTokenizer implements Tokenizer{
-    private String src, next;
+public class IterateTokenizer implements Tokenizer {
+    private final String src;
+    private String next;
+    private String prev;
     private int pos;
 
     public IterateTokenizer(String src) {
@@ -16,14 +18,14 @@ public class IterateTokenizer implements Tokenizer{
     }
 
     @Override
-    public String peek(){
-        if(next == null)
-            throw new TokenizerException.NoToken();
+    public String peek() {
+        if (next == null)
+            throw new TokenizerException.NoToken(prev);
         return next;
     }
 
     @Override
-    public boolean peek(String s){
+    public boolean peek(String s) {
         if (!hasNext()) {
             return false;
         } else {
@@ -34,7 +36,7 @@ public class IterateTokenizer implements Tokenizer{
     @Override
     public String consume() {
         if (!hasNext()) {
-            throw new TokenizerException.NoToken();
+            throw new TokenizerException.NoToken(prev);
         } else {
             String result = next;
             computeNext();
@@ -43,9 +45,9 @@ public class IterateTokenizer implements Tokenizer{
     }
 
     @Override
-    public boolean consume(String s){
+    public boolean consume(String s) {
         if (!hasNext()) {
-            throw new TokenizerException.NoToken();
+            throw new TokenizerException.NoToken(prev);
         } else {
             if (next.equals(s)) {
                 computeNext();
@@ -56,13 +58,28 @@ public class IterateTokenizer implements Tokenizer{
         }
     }
 
+    private void processSingleLineComment() {
+        while (pos < src.length() && src.charAt(pos) != '\n') {
+            pos++;
+        }
+    }
+
+    private boolean ignoreCharacter(char c) {
+        return Character.isWhitespace(c) || c == '#' || c == '"';
+    }
+
     private void computeNext() {
         if (src == null) return;
         StringBuilder sb = new StringBuilder();
-        while (pos < src.length() && Character.isWhitespace(src.charAt(pos))) {
-            pos++;
+        while (pos < src.length() && ignoreCharacter(src.charAt(pos))) {
+            if (src.charAt(pos) == '#')
+                processSingleLineComment();
+            else
+                pos++;
         }
+
         if (pos == src.length()) {
+            prev = next;
             next = null;
             return;
         }
@@ -83,6 +100,7 @@ public class IterateTokenizer implements Tokenizer{
         } else {
             throw new TokenizerException.BadCharacter(c);
         }
+        prev = next;
         next = sb.toString();
     }
 }

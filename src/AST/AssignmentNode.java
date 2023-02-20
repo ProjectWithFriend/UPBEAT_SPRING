@@ -1,20 +1,23 @@
 package AST;
 
-public class AssignmentNode extends Node{
-    private final String identifier;
-    private final Node expression;
+import Game.Game;
 
-    public AssignmentNode(String identifier, Node expression) {
+import java.util.Map;
+
+import static AST.Node.*;
+
+public class AssignmentNode extends ExecNode {
+    private final String identifier;
+    private final ExprNode expression;
+
+    public AssignmentNode(String identifier, ExprNode expression) {
         this.identifier = identifier;
         this.expression = expression;
     }
-    public String getIdentifier() {
-        return identifier;
-    }
-    public Node getExpression() {
-        return expression;
-    }
-    public void execute() {
-        System.out.println("Assignment");
+
+    public ExecNode execute(Game game) {
+        Map<String, Long> memory = game.getIdentifiers();
+        memory.put(identifier, expression.eval(game));
+        return next;
     }
 }
