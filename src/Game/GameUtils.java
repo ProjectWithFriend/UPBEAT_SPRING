@@ -135,4 +135,19 @@ public final class GameUtils {
     public static long getInitialBudget() {
         return initialBudget;
     }
+
+    public static Map<Direction, Integer> deltaTable() {
+        Map<Direction, Integer> map = new HashMap<>();
+        map.put(Direction.Up, -GameUtils.getColsInt());
+        map.put(Direction.Down, GameUtils.getColsInt());
+        map.put(Direction.UpLeft, -GameUtils.getColsInt() - 1);
+        map.put(Direction.UpRight, -GameUtils.getColsInt() + 1);
+        map.put(Direction.DownLeft, -1);
+        map.put(Direction.DownRight, 1);
+        return map;
+    }
+
+    public static boolean isValidLocation(int location) {
+        return location >= 0 && location < territory.size();
+    }
 }

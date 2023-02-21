@@ -14,10 +14,10 @@ public class GameProps implements Game {
     private final List<Region> territory;
     private Player currentPlayer;
 
-    public GameProps(String player1Name, String player2Name) {
-        this.territory = GameUtils.createTerritory();
-        this.player1 = GameUtils.createPlayer(player1Name);
-        this.player2 = GameUtils.createPlayer(player2Name);
+    public GameProps(List<Region> territory, Player player1, Player player2) {
+        this.territory = territory;
+        this.player1 = player1;
+        this.player2 = player2;
         this.currentPlayer = this.player1;
     }
 
@@ -30,37 +30,27 @@ public class GameProps implements Game {
     }
 
     @Override
-    public void collect(long value) {
-        if (value <= 0)
-            throw new GameException.InvalidValue(value);
-        if (currentPlayer.getBudget() < 1)
-            return;
+    public boolean collect(long value) {
+        if (currentPlayer.getBudget() < 1 || value < 0)
+            return false;
+        currentPlayer.updateBudget(-1);
         Region targetRegion = cityCrewRegion();
         if (value > targetRegion.getDeposit())
-            return;
+            return true;
         targetRegion.updateDeposit(-value);
         currentPlayer.updateBudget(value);
         if (targetRegion.getDeposit() == 0)
             targetRegion.updateOwner(null);
-    }
-
-    private static Map<Direction, Integer> deltaTable() {
-        Map<Direction, Integer> map = new HashMap<>();
-        map.put(Direction.Up, -GameUtils.getColsInt());
-        map.put(Direction.Down, GameUtils.getColsInt());
-        map.put(Direction.UpLeft, -GameUtils.getColsInt() - 1);
-        map.put(Direction.UpRight, -GameUtils.getColsInt() + 1);
-        map.put(Direction.DownLeft, -1);
-        map.put(Direction.DownRight, 1);
-        return map;
+        return true;
     }
 
     private List<Region> getAdjacentRegions(Region region) {
         List<Region> adjacentRegions = new LinkedList<>();
-        for (Integer delta : deltaTable().values()) {
-            if (region.getLocation() + delta < 0)
+        for (Integer delta : GameUtils.deltaTable().values()) {
+            int targetLocation = region.getLocation() + delta;
+            if (!GameUtils.isValidLocation(targetLocation))
                 continue;
-            adjacentRegions.add(getRegion(region.getLocation() + delta));
+            adjacentRegions.add(getRegion(targetLocation));
         }
         return adjacentRegions;
     }

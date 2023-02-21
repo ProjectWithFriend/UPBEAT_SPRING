@@ -37,9 +37,4 @@ public class RegionProps implements Region {
     public int getLocation() {
         return this.location;
     }
-
-    @Override
-    public long getNearby() {
-        throw new GameException.NotImplemented();
-    }
 }

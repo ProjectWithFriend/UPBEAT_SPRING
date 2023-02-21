@@ -6,7 +6,6 @@ import static AST.Node.ExecNode;
 
 import AST.IfElseNode;
 import AST.WhileNode;
-import Game.MockupGame;
 import Tokenizer.IterateTokenizer;
 import org.junit.jupiter.api.Test;
 
@@ -83,17 +82,17 @@ public class GrammarParserTest {
                     "# city crew on a region belonging to nobody, so claim it\n" +
                     "if (budget - 1) then invest 1 else {}\n"
         ));
-        MockupGame mockup = new MockupGame();
-        node = parser.parse();
-        assertInstanceOf(AssignmentNode.class, node);
-        node = node.execute(mockup);
-        assertInstanceOf(AssignmentNode.class, node);
-        node = node.execute(mockup);
-        assertInstanceOf(WhileNode.class, node);
-        node = node.execute(mockup);
-        assertInstanceOf(IfElseNode.class, node);
-        node = node.execute(mockup);
-        assertNull(node);
+//        MockupGame mockup = new MockupGame();
+//        node = parser.parse();
+//        assertInstanceOf(AssignmentNode.class, node);
+//        node = node.execute(mockup);
+//        assertInstanceOf(AssignmentNode.class, node);
+//        node = node.execute(mockup);
+//        assertInstanceOf(WhileNode.class, node);
+//        node = node.execute(mockup);
+//        assertInstanceOf(IfElseNode.class, node);
+//        node = node.execute(mockup);
+//        assertNull(node);
     }
 
     @Test

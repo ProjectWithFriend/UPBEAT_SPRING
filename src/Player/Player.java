@@ -22,4 +22,6 @@ public interface Player {
     long getID();
 
     Map<String, Long> getIdentifiers();
+
+    void relocate(int location);
 }

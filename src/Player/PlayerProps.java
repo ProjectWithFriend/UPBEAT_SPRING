@@ -67,4 +67,9 @@ public class PlayerProps implements Player {
     public Map<String, Long> getIdentifiers() {
         return identifier;
     }
+
+    @Override
+    public void relocate(int location) {
+
+    }
 }

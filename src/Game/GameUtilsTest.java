@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GameUtilsTest {
+public final class GameUtilsTest {
     @Test
     public void testLoadConfig() {
         assertDoesNotThrow(() -> GameUtils.loadConfig("""

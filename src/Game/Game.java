@@ -19,8 +19,9 @@ public interface Game {
     /**
      * retrieves deposits from the current region occupied by the city crew.
      * @param value collection amount
+     * @return result of collect, true = success, false = fail
      */
-    void collect(long value);
+    boolean collect(long value);
 
     /**
      * adds more deposits to the current region occupied by the city crew.
