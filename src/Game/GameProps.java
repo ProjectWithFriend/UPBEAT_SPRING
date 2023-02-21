@@ -1,9 +1,10 @@
 package Game;
 
 import AST.Node;
-import Parser.*;
-import Player.*;
-import Region.*;
+import Parser.GrammarParser;
+import Parser.Parser;
+import Player.Player;
+import Region.Region;
 import Tokenizer.IterateTokenizer;
 
 import java.util.*;
@@ -13,6 +14,7 @@ public class GameProps implements Game {
     private final Player player2;
     private final List<Region> territory;
     private Player currentPlayer;
+    private final int actionCost = 1;
 
     public GameProps(List<Region> territory, Player player1, Player player2) {
         this.territory = territory;
@@ -48,7 +50,7 @@ public class GameProps implements Game {
         List<Region> adjacentRegions = new LinkedList<>();
         for (Integer delta : GameUtils.deltaTable().values()) {
             int targetLocation = region.getLocation() + delta;
-            if (!GameUtils.isValidLocation(targetLocation))
+            if (!isValidLocation(targetLocation))
                 continue;
             adjacentRegions.add(getRegion(targetLocation));
         }
@@ -152,6 +154,34 @@ public class GameProps implements Game {
 
     @Override
     public void attack(Direction direction, long value) {
-        throw new GameException.NotImplemented();
+        //validate caller budget
+        if(value + actionCost < currentPlayer.getBudget() || value < 0){
+            return;
+        }
+
+        //get nessary data
+        int cityCrewLocation = cityCrewRegion().getLocation();
+        int targetLocation = cityCrewLocation + GameUtils.deltaTable().get(direction);
+
+        //check if target location is valid
+        if(!isValidLocation(targetLocation)){
+            return;
+        }else{
+            if(value < territory.get(targetLocation).getDeposit()) {
+                territory.get(targetLocation).updateDeposit(-value);
+                currentPlayer.updateBudget(-value - actionCost);
+            }else if(value >= territory.get(targetLocation).getDeposit()){
+                territory.get(targetLocation).updateDeposit(0);
+                territory.get(targetLocation).updateOwner(null);
+                currentPlayer.updateBudget(-value - actionCost);
+            }
+        }
+    }
+
+    /*
+     added slome method
+     */
+    public boolean isValidLocation(int location) {
+        return location >= 0 && location < territory.size();
     }
 }

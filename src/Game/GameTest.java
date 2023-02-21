@@ -51,12 +51,24 @@ public final class GameTest {
         return regions;
     }
 
-    private static Player mockPlayer(int initCenterLocation) {
-        return new Player() {
-            private long budget = 0;
-            private int cityCenterLocation = initCenterLocation;
-            private int cityCrewLocation = initCenterLocation;
-            private final Map<String, Long> identifiers = new HashMap<>();
+    private static abstract class TestPlayer implements Player{
+
+        public TestPlayer(int initCenterLocation) {
+            cityCrewLocation = initCenterLocation;
+            cityCenterLocation = initCenterLocation;
+        }
+        public long budget = 0;
+        public int cityCenterLocation;
+        public int cityCrewLocation;
+        public final Map<String, Long> identifiers = new HashMap<>();
+        public void setCityCrewLocation(int location) {
+            cityCrewLocation = location;
+        }
+
+    }
+
+    private static TestPlayer mockPlayer(int initCenterLocation) {
+        return new TestPlayer(initCenterLocation) {
 
             @Override
             public boolean isAlive() {
@@ -114,7 +126,7 @@ public final class GameTest {
         };
     }
 
-    private Player player1, player2;
+    private TestPlayer player1, player2;
     private List<Region> territory;
     private Game game;
 
@@ -161,5 +173,15 @@ public final class GameTest {
         assertTrue(game.collect(97));
         assertEquals(97, player1.getBudget());
         assertEquals(0, region.getDeposit());
+    }
+
+    @Test
+    public void attack(){
+        player1.updateBudget(1000);
+        territory.get(player2.getCityCenter()).updateDeposit(10);
+        player1.setCityCrewLocation(6);
+        game.attack(Direction.UpRight, 10);
+        assertEquals(989, player1.getBudget()); //should be 990 - action cost(1) = 989
+        assertDoesNotThrow(() -> game.attack(Direction.UpRight, 10));
     }
 }
