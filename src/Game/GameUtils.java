@@ -136,14 +136,15 @@ public final class GameUtils {
         return initialBudget;
     }
 
-    public static Map<Direction, Integer> deltaTable() {
+    public static Map<Direction, Integer> deltaTable(int location) {
+        boolean isEven = location % 2 == 0;
         Map<Direction, Integer> map = new HashMap<>();
-        map.put(Direction.Up, -GameUtils.getColsInt());
-        map.put(Direction.Down, GameUtils.getColsInt());
-        map.put(Direction.DownLeft, -GameUtils.getColsInt() - 1);
-        map.put(Direction.DownRight, -GameUtils.getColsInt() + 1);
-        map.put(Direction.UpLeft, -1);
-        map.put(Direction.UpRight, 1);
+        map.put(Direction.Up, -getColsInt());
+        map.put(Direction.Down, getColsInt());
+        map.put(Direction.DownLeft, isEven ? getColsInt() - 1 : -1);
+        map.put(Direction.DownRight, isEven ? getColsInt() + 1 : 1);
+        map.put(Direction.UpLeft, isEven ? -1 : -getColsInt() - 1);
+        map.put(Direction.UpRight, isEven ? 1 : -getColsInt() + 1);
         return map;
     }
 }

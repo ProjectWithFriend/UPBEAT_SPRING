@@ -48,7 +48,7 @@ public class GameProps implements Game {
 
     private List<Region> getAdjacentRegions(Region region) {
         List<Region> adjacentRegions = new LinkedList<>();
-        for (Integer delta : GameUtils.deltaTable().values()) {
+        for (Integer delta : GameUtils.deltaTable(region.getLocation()).values()) {
             int targetLocation = region.getLocation() + delta;
             if (!isValidLocation(targetLocation))
                 continue;
@@ -162,7 +162,7 @@ public class GameProps implements Game {
 
         //get nessary data
         int cityCrewLocation = cityCrewRegion().getLocation();
-        int targetLocation = cityCrewLocation + GameUtils.deltaTable().get(direction);
+        int targetLocation = cityCrewLocation + GameUtils.deltaTable(cityCrewLocation).get(direction);
 
         //check if target location is valid
         if(!isValidLocation(targetLocation)){
