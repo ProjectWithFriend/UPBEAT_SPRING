@@ -24,4 +24,5 @@ public interface Player {
     Map<String, Long> getIdentifiers();
 
     void relocate(int location);
+    void endTurn();
 }

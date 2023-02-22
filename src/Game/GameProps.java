@@ -59,17 +59,18 @@ public class GameProps implements Game {
 
     @Override
     public void invest(long value) {
-        boolean atLeastOneAdjacent = false;
+        currentPlayer.updateBudget(-1);
         Region crewRegion = cityCrewRegion();
+        boolean atLeastOneAdjacent = crewRegion.getOwner() == currentPlayer;
         for (Region adjacent : getAdjacentRegions(crewRegion))
             atLeastOneAdjacent |= adjacent.getOwner() == currentPlayer;
         if (!atLeastOneAdjacent) // adjacency requirement
             return;
         if (crewRegion.getOwner() != currentPlayer) // no occupation requirement
             return;
-        if (currentPlayer.getBudget() < value + 1) // budget requirement
+        if (currentPlayer.getBudget() < value) // budget requirement
             return;
-        currentPlayer.updateBudget(-value - 1);
+        currentPlayer.updateBudget(-value);
         crewRegion.updateOwner(currentPlayer);
         crewRegion.updateDeposit(value);
     }

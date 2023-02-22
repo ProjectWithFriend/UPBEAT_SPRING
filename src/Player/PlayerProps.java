@@ -72,4 +72,9 @@ public class PlayerProps implements Player {
     public void relocate(int location) {
 
     }
+
+    @Override
+    public void endTurn() {
+
+    }
 }
