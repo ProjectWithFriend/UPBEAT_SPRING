@@ -53,21 +53,6 @@ public final class GameTest {
         }
         return regions;
     }
-
-    private static abstract class TestPlayer implements Player {
-
-        public TestPlayer(List<TestRegion> territory, int initCenterLocation) {
-            cityCrewLocation = initCenterLocation;
-            cityCenterLocation = initCenterLocation;
-            territory.get(initCenterLocation).updateOwner(this);
-        }
-
-        public long budget = 0;
-        public int cityCenterLocation;
-        public int cityCrewLocation;
-        public final Map<String, Long> identifiers = new HashMap<>();
-    }
-
     private static TestPlayer mockPlayer(List<TestRegion> territory, int initCenterLocation) {
         return new TestPlayer(territory, initCenterLocation) {
 
@@ -88,11 +73,7 @@ public final class GameTest {
 
             @Override
             public void moveCityCrew(Direction direction) {
-                cityCrewLocation += GameUtils.deltaTable().get(direction);
-            }
-
-            public void setCityCrew(int location) {
-                cityCrewLocation = location;
+                cityCrewLocation += GameUtils.deltaTable(cityCrewLocation).get(direction);
             }
 
             @Override
@@ -103,6 +84,10 @@ public final class GameTest {
             @Override
             public int getCityCrew() {
                 return cityCrewLocation;
+            }
+
+            public void setCityCrew(int location) {
+                cityCrewLocation = location;
             }
 
             @Override
@@ -188,14 +173,43 @@ public final class GameTest {
         }
     }
 
+    /*
+     a bit for testing attack method
+     TODO: test more cases
+     */
     @Test
     public void attack() {
+        player1.updateBudget(1000);
         player1.budget = 1000;
         territory.get(player2.getCityCenter()).updateDeposit(10);
         player1.cityCrewLocation = 6;
         game.attack(Direction.UpRight, 10);
         assertEquals(989, player1.getBudget()); //should be 990 - action cost(1) = 989
-        assertDoesNotThrow(() -> game.attack(Direction.UpRight, 10));
+    }
+
+    @Test
+    public void nearby() {
+        player1.setCityCrewLocation(0);
+        game.getTerritory().get(0).updateOwner(player1);
+        game.getTerritory().get(6).updateOwner(player2);
+        game.getTerritory().get(6).updateDeposit(100);
+        System.out.println(game.nearby(Direction.DownRight));
+    }
+
+    private static abstract class TestPlayer implements Player {
+        public final Map<String, Long> identifiers = new HashMap<>();
+        public long budget = 0;
+        public int cityCenterLocation;
+        public int cityCrewLocation;
+        public TestPlayer(List<TestRegion> territory, int initCenterLocation) {
+            cityCrewLocation = initCenterLocation;
+            cityCenterLocation = initCenterLocation;
+        }
+
+        public void setCityCrewLocation(int location) {
+            cityCrewLocation = location;
+        }
+
     }
 
     @Test

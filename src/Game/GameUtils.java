@@ -11,8 +11,8 @@ import Game.GameException.*;
 import java.util.*;
 
 public final class GameUtils {
-    private static long rows = 20;
-    private static long cols = 15;
+    private static long rows = 4;
+    private static long cols = 4;
     private static long initialPlanMinutes = 5;
     private static long initialPlanSeconds = 0;
     private static long initialBudget = 10000;

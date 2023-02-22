@@ -82,7 +82,19 @@ public class GameProps implements Game {
 
     @Override
     public long nearby(Direction direction) {
-        throw new GameException.NotImplemented();
+        int cityCrewLocation = currentPlayer.getCityCrew();
+        int checkLocation = cityCrewLocation + GameUtils.deltaTable(cityCrewLocation).get(direction);
+        int moveDistance = 1;
+        Region targetRegion = territory.get(cityCrewLocation); // default value at started point
+        while(getRegion(checkLocation).getOwner() == currentPlayer || getRegion(checkLocation).getOwner() == null) {
+            checkLocation += GameUtils.deltaTable(checkLocation).get(direction);
+            moveDistance++;
+            if(!isValidLocation(checkLocation)){
+                return 0;
+            }
+        }
+        targetRegion = getRegion(checkLocation); //update target region
+        return (long) (moveDistance * 100L + Math.floor(Math.log10(targetRegion.getDeposit()) + 1));
     }
 
     @Override
@@ -156,7 +168,7 @@ public class GameProps implements Game {
     @Override
     public void attack(Direction direction, long value) {
         //validate caller budget
-        if(value + actionCost < currentPlayer.getBudget() || value < 0){
+        if(value + actionCost > currentPlayer.getBudget() || value < 0){
             return;
         }
 
