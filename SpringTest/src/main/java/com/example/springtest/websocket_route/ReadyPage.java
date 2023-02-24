@@ -1,4 +1,4 @@
-package com.example.springtest.api;
+package com.example.springtest.websocket_route;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +35,12 @@ public class ReadyPage {
         readyResponse.setReadyP1(readyRequest.isReadyP1());
         readyResponse.setReadyP2(readyRequest.isReadyP2());
         return readyResponse;
+    }
+
+    @MessageMapping("/start")
+    @SendTo("/topic/gameStart")
+    public boolean gameStart(){
+        return true;
     }
 }
 
