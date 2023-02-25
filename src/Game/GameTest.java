@@ -1,9 +1,10 @@
 package Game;
 
+import Game.GameException.NotImplemented;
 import Player.Player;
-
-import Game.GameException.*;
-import Region.*;
+import Region.EuclidianPoint;
+import Region.Point;
+import Region.Region;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,10 +16,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class GameTest {
-    private static abstract class TestRegion implements Region {
-        public long deposit = 0;
-        public Player owner = null;
-    }
+    private TestPlayer player1, player2;
+    private List<TestRegion> territory;
+    private GameProps game;
 
     private static TestRegion mockRegion(Point location) {
         return new TestRegion() {
@@ -59,18 +59,6 @@ public final class GameTest {
             }
         }
         return regions;
-    }
-
-    private static abstract class TestPlayer implements Player {
-        public TestRegion cityCenter;
-
-        public TestPlayer(TestRegion cityCenter) {
-            cityCenter.updateOwner(this);
-            this.cityCenter = cityCenter;
-        }
-
-        public long budget = 0;
-        public final Map<String, Long> identifiers = new HashMap<>();
     }
 
     private static TestPlayer mockPlayer(TestRegion initCenterLocation) {
@@ -117,10 +105,6 @@ public final class GameTest {
             }
         };
     }
-
-    private TestPlayer player1, player2;
-    private List<TestRegion> territory;
-    private GameProps game;
 
     @BeforeEach
     public void before() {
@@ -173,6 +157,41 @@ public final class GameTest {
 
             game.endTurn();
         }
+    }
+
+    @Test
+    public void nearby() {
+        player1.updateBudget(1000);
+        game.moveCityCrew(Point.of(0, 0));
+        assertEquals(0, game.nearby(Direction.Up));
+        assertEquals(0, game.nearby(Direction.UpLeft));
+        assertEquals(0, game.nearby(Direction.UpRight));
+        assertEquals(0, game.nearby(Direction.Down));
+        assertEquals(0, game.nearby(Direction.DownLeft));
+        assertEquals(0, game.nearby(Direction.DownRight));
+        territory.get(11).updateOwner(player2);
+        assertEquals(301, game.nearby(Direction.DownRight));
+        territory.get(11).updateDeposit(100);
+        assertEquals(303, game.nearby(Direction.DownRight));
+    }
+
+    @Test
+    public void relocate() {
+        game.beginTurn();
+        player1.updateBudget(1000);
+        game.moveCityCrew(Point.of(0, 0));
+        game.moveCityCrew(Point.of(3, 2));
+        game.relocate();
+        assertEquals(974, game.getBudget());
+        game.moveCityCrew(Point.of(0, 0));
+        game.relocate();
+        assertEquals(948, game.getBudget());
+
+        player1.updateBudget(-948);
+        game.moveCityCrew(Point.of(3, 2));
+        game.relocate();
+        assertEquals(0, game.getBudget());
+        return;
     }
 
     @Test
@@ -233,5 +252,21 @@ public final class GameTest {
         game.moveCityCrew(Point.of(1, 2));
         assertEquals(22, game.opponent());
 
+    }
+
+    private static abstract class TestRegion implements Region {
+        public long deposit = 0;
+        public Player owner = null;
+    }
+
+    private static abstract class TestPlayer implements Player {
+        public final Map<String, Long> identifiers = new HashMap<>();
+        public TestRegion cityCenter;
+        public long budget = 0;
+
+        public TestPlayer(TestRegion cityCenter) {
+            cityCenter.updateOwner(this);
+            this.cityCenter = cityCenter;
+        }
     }
 }

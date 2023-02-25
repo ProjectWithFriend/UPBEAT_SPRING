@@ -58,6 +58,8 @@ public class PlayerProps implements Player {
 
     @Override
     public void relocate(Region to) {
+        cityCenter.updateOwner(null);
         cityCenter = to;
+        cityCenter.updateOwner(this);
     }
 }

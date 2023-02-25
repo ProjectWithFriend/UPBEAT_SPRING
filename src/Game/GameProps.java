@@ -4,7 +4,8 @@ import AST.Node;
 import Parser.GrammarParser;
 import Parser.Parser;
 import Player.Player;
-import Region.*;
+import Region.Point;
+import Region.Region;
 import Tokenizer.IterateTokenizer;
 
 import java.util.*;
@@ -13,9 +14,9 @@ public class GameProps implements Game {
     private final Player player1;
     private final Player player2;
     private final List<Region> territory;
-    private Player currentPlayer;
     private final int actionCost = 1;
     private final int rows, cols;
+    private Player currentPlayer;
     private Region cityCrew;
 
     public GameProps(List<Region> territory, Player player1, Player player2, int rows, int cols) {
@@ -75,12 +76,41 @@ public class GameProps implements Game {
 
     @Override
     public void relocate() {
-        throw new GameException.NotImplemented();
+        //check if the player has enough budget
+        if(currentPlayer.getBudget() < 1)
+            return;
+
+        Point currentCityCrewLocation = cityCrew.getLocation();
+        Point currentCityCenter = currentPlayer.getCityCenter().getLocation();
+        int distance = (int) Math.floor(Math.sqrt(Math.pow(currentCityCrewLocation.getX() - currentCityCenter.getX(), 2) + Math.pow(currentCityCrewLocation.getY() - currentCityCenter.getY(), 2)));
+        if(distance < 0) distance = 1;
+        int cost = 5*distance + 10;
+
+        //validate if the player has enough budget
+        if(currentPlayer.getBudget() < cost + actionCost){
+            return;
+        }else{
+            currentPlayer.updateBudget(-cost - actionCost);
+            //update the city center location of current player
+            currentPlayer.getCityCenter().updateOwner(null);
+            cityCrew.updateOwner(currentPlayer);
+            currentPlayer.relocate(cityCrew);
+        }
     }
 
     @Override
     public long nearby(Direction direction) {
-        throw new GameException.NotImplemented();
+        Point currentLocation = cityCrew.getLocation();
+        int distance = 0;
+        Point newLocation = currentLocation.direction(direction);
+        while (newLocation.isValidPoint(rows, cols)) {
+            Region region = getRegion(newLocation);
+            if (region.getOwner() != null && region.getOwner() != currentPlayer)
+                return ((distance + 1L)*100 + (long)(Math.log10(region.getDeposit()+1))+1);
+            distance++;
+            newLocation = newLocation.direction(direction);
+        }
+        return 0L;
     }
 
     @Override
@@ -194,27 +224,5 @@ public class GameProps implements Game {
     @Override
     public void attack(Direction direction, long value) {
         throw new GameException.NotImplemented();
-//        //validate caller budget
-//        if (value + actionCost < currentPlayer.getBudget() || value < 0) {
-//            return;
-//        }
-//
-//        //get nessary data
-//        int cityCrewLocation = cityCrewRegion().getLocation();
-//        int targetLocation = cityCrewLocation + GameUtils.deltaTable(cityCrewLocation).get(direction);
-//
-//        //check if target location is valid
-//        if (!isValidLocation(targetLocation)) {
-//            return;
-//        } else {
-//            if (value < territory.get(targetLocation).getDeposit()) {
-//                territory.get(targetLocation).updateDeposit(-value);
-//                currentPlayer.updateBudget(-value - actionCost);
-//            } else if (value >= territory.get(targetLocation).getDeposit()) {
-//                territory.get(targetLocation).updateDeposit(0);
-//                territory.get(targetLocation).updateOwner(null);
-//                currentPlayer.updateBudget(-value - actionCost);
-//            }
-//        }
     }
 }
