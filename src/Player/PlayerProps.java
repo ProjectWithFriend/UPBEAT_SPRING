@@ -1,7 +1,6 @@
 package Player;
 
-import Game.Direction;
-import Region.Region;
+import Region.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,6 @@ public class PlayerProps implements Player {
     private final long id;
     private final String name;
     private Region cityCenter;
-    private Region cityCrew;
     private long budget;
     private final Map<String, Long> identifier;
 
@@ -20,7 +18,6 @@ public class PlayerProps implements Player {
         this.identifier = new HashMap<>();
         this.budget = budget;
         this.cityCenter = cityCenter;
-        this.cityCrew = cityCenter;
     }
 
     @Override
@@ -38,19 +35,10 @@ public class PlayerProps implements Player {
         this.budget += amount;
     }
 
-    @Override
-    public void moveCityCrew(Direction direction) {
-
-    }
 
     @Override
-    public int getCityCenter() {
-        return cityCenter.getLocation();
-    }
-
-    @Override
-    public int getCityCrew() {
-        return cityCrew.getLocation();
+    public Region getCityCenter() {
+        return cityCenter;
     }
 
     @Override
@@ -69,12 +57,7 @@ public class PlayerProps implements Player {
     }
 
     @Override
-    public void relocate(int location) {
-
-    }
-
-    @Override
-    public void endTurn() {
-
+    public void relocate(Region to) {
+        cityCenter = to;
     }
 }

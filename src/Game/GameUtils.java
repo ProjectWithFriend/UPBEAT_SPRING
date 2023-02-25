@@ -76,8 +76,10 @@ public final class GameUtils {
      */
     public static List<Region> createTerritory() {
         territory = new ArrayList<>();
-        for (int i = 0; i < rows * cols; i++) {
-            territory.add(new RegionProps(i));
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                territory.add(new RegionProps(Point.of(i, j)));
+            }
         }
         return territory;
     }
@@ -112,16 +114,8 @@ public final class GameUtils {
         return rows;
     }
 
-    public static int getRowsInt() {
-        return (int) rows;
-    }
-
     public static long getCols() {
         return cols;
-    }
-
-    public static int getColsInt() {
-        return (int) cols;
     }
 
     public static long getInterestPercentage() {
@@ -136,15 +130,4 @@ public final class GameUtils {
         return initialBudget;
     }
 
-    public static Map<Direction, Integer> deltaTable(int location) {
-        boolean isEven = location % 2 == 0;
-        Map<Direction, Integer> map = new HashMap<>();
-        map.put(Direction.Up, -getColsInt());
-        map.put(Direction.Down, getColsInt());
-        map.put(Direction.DownLeft, isEven ? getColsInt() - 1 : -1);
-        map.put(Direction.DownRight, isEven ? getColsInt() + 1 : 1);
-        map.put(Direction.UpLeft, isEven ? -1 : -getColsInt() - 1);
-        map.put(Direction.UpRight, isEven ? 1 : -getColsInt() + 1);
-        return map;
-    }
 }

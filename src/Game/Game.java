@@ -1,6 +1,6 @@
 package Game;
 
-import Region.Region;
+import Region.*;
 
 import java.util.List;
 import java.util.Map;
@@ -59,9 +59,9 @@ public interface Game {
 
     List<Region> getTerritory();
 
-    Region getRegion(int index);
+    Region getRegion(Point point);
 
     long getBudget();
 
-    void endTurn();
+    Region getCityCrew();
 }

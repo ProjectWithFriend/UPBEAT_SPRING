@@ -62,27 +62,4 @@ public final class GameUtilsTest {
                 Objects.requireNonNull(GameUtils.createPlayer("")).getCityCenter()
         );
     }
-
-    @Test
-    public void testDeltaTable() {
-        GameUtils.loadConfig("""
-                m=4
-                n=4
-                """);
-        Map<Direction, Integer> directionsMap = GameUtils.deltaTable(6);
-        assertEquals(-4, directionsMap.get(Direction.Up));
-        assertEquals(4, directionsMap.get(Direction.Down));
-        assertEquals(-1, directionsMap.get(Direction.UpLeft));
-        assertEquals(1, directionsMap.get(Direction.UpRight));
-        assertEquals(3, directionsMap.get(Direction.DownLeft));
-        assertEquals(5, directionsMap.get(Direction.DownRight));
-
-        directionsMap = GameUtils.deltaTable(9);
-        assertEquals(-4, directionsMap.get(Direction.Up));
-        assertEquals(4, directionsMap.get(Direction.Down));
-        assertEquals(-5, directionsMap.get(Direction.UpLeft));
-        assertEquals(-3, directionsMap.get(Direction.UpRight));
-        assertEquals(-1, directionsMap.get(Direction.DownLeft));
-        assertEquals(1, directionsMap.get(Direction.DownRight));
-    }
 }
