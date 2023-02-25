@@ -108,6 +108,7 @@ class NameRequest {
     public void setNameP2(String nameP2) {
         this.nameP2 = nameP2;
     }
+
 }
 
 @Data
