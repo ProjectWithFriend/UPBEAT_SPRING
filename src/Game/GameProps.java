@@ -223,6 +223,30 @@ public class GameProps implements Game {
 
     @Override
     public void attack(Direction direction, long value) {
-        throw new GameException.NotImplemented();
+        //validate if the player has enough budget
+        if(value + actionCost > currentPlayer.getBudget() || value < 0){
+            currentPlayer.updateBudget(-actionCost);
+            return;
+        }
+
+        //get vital information
+        Point cityCrewLocation = cityCrew.getLocation();
+        Point targetLocation = cityCrewLocation.direction(direction);
+
+        //validate if the target location is valid
+        if(!targetLocation.isValidPoint(rows, cols)){
+            return;
+        }else{
+            if(value < territory.get(targetLocation.getY()*cols + targetLocation.getX()).getDeposit()){
+                //update the budget of current player
+                currentPlayer.updateBudget(-actionCost - value);
+                //update the deposit of the target region
+                territory.get(targetLocation.getY()*cols + targetLocation.getX()).updateDeposit(-value);
+            }else if(value >= territory.get(targetLocation.getY()*cols + targetLocation.getX()).getDeposit()){
+                territory.get(targetLocation.getY()*cols + targetLocation.getX()).updateDeposit(-value);
+                territory.get(targetLocation.getY()*cols + targetLocation.getX()).updateOwner(null);
+                currentPlayer.updateBudget(-actionCost - value);
+            }
+        }
     }
 }

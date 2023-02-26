@@ -26,6 +26,9 @@ public class RegionProps implements Region {
     @Override
     public void updateDeposit(long amount) {
         this.deposit += amount;
+        if(this.deposit < 0){
+            this.deposit = 0;
+        }
     }
 
     @Override

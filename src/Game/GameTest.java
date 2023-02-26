@@ -36,6 +36,8 @@ public final class GameTest {
             @Override
             public void updateDeposit(long amount) {
                 deposit += amount;
+                if(deposit < 0)
+                    deposit = 0;
             }
 
             @Override
@@ -196,12 +198,36 @@ public final class GameTest {
 
     @Test
     public void attack() {
-//        player1.budget = 1000;
-//        territory.get(player2.getCityCenter()).updateDeposit(10);
-//        game.cityCrewLocation = 6;
-//        game.attack(Direction.UpRight, 10);
-//        assertEquals(989, player1.getBudget()); //should be 990 - action cost(1) = 989
-//        assertDoesNotThrow(() -> game.attack(Direction.UpRight, 10));
+        game.beginTurn();
+        player1.updateBudget(1000);
+        game.moveCityCrew(Point.of(0, 0));
+        territory.get(6).updateOwner(player2);
+        territory.get(6).updateDeposit(100);
+        game.moveCityCrew(Point.of(1, 1));
+        game.attack(Direction.DownRight,100);
+        assertEquals(899, game.getBudget());
+        assertEquals(null, territory.get(6).getOwner());
+
+        //update budget to 0
+        player1.updateBudget(-899);
+        territory.get(6).updateOwner(player2);
+        game.attack(Direction.DownRight,100);
+        assertEquals(0, game.getBudget());
+        assertEquals(player2, territory.get(6).getOwner());
+
+//        //update budget to 1000
+        player1.updateBudget(1000);
+        territory.get(1).updateOwner(player2);
+        territory.get(1).updateDeposit(10000);
+        game.attack(Direction.Up,10000);
+        assertEquals(999, game.getBudget());
+        assertEquals(player2, territory.get(1).getOwner());
+        game.attack(Direction.Up,999);
+        assertEquals(998, game.getBudget());
+        game.attack(Direction.Up,997);
+        assertEquals(0, game.getBudget());
+        assertEquals(player2, territory.get(1).getOwner());
+        assertEquals(9003, territory.get(1).getDeposit());
     }
 
     @Test
