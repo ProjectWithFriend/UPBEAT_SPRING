@@ -140,11 +140,6 @@ public class GameProps implements Game {
         return 0;
     }
 
-//    @Override
-//    public long getCurrentPlayerID() {
-//        return currentPlayer.getID();
-//    }
-
     @Override
     public void submitPlan(String constructionPlan) {
         Parser parser = new GrammarParser(new IterateTokenizer(constructionPlan));
