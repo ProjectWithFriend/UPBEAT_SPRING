@@ -11,21 +11,10 @@ import Game.GameException.*;
 import java.util.*;
 
 public final class GameUtils {
-    private static long rows = 4;
-    private static long cols = 4;
-    private static long initialPlanMinutes = 5;
-    private static long initialPlanSeconds = 0;
-    private static long initialBudget = 10000;
-    private static long initialDeposit = 100;
-    private static long revisionPlanMinutes = 30;
-    private static long revisionPlanSeconds = 0;
-    private static long revisionCost = 100;
-    private static long maxDeposit = 1000000;
-    private static long interestPercentage = 5;
-    private static long id = 1;
+
     private static List<Region> territory;
 
-    private static Map<String, Long> nodeExecution(ExecNode node) {
+    private static Map<String, Long> nodesEvaluation(ExecNode node) {
         Map<String, Long> map = new HashMap<>();
         while (node != null) {
             if (!(node instanceof AssignmentNode))
@@ -35,38 +24,69 @@ public final class GameUtils {
         return map;
     }
 
-    private static void mapToVariables(Map<String, Long> map) {
-        for (String key : map.keySet()) {
-            switch (key) {
-                case "m" -> rows = map.get(key);
-                case "n" -> cols = map.get(key);
-                case "init_plan_min" -> initialPlanMinutes = map.get(key);
-                case "init_plan_sec" -> {
-                    if (map.get(key) < 0 || map.get(key) > 59)
-                        throw new InvalidConfiguration("seconds must be within 0-59");
-                    initialPlanSeconds = map.get(key);
-                }
-                case "init_budget" -> initialBudget = map.get(key);
-                case "init_center_dep" -> initialDeposit = map.get(key);
-                case "plan_rev_min" -> revisionPlanMinutes = map.get(key);
-                case "plan_rev_sec" -> {
-                    if (map.get(key) < 0 || map.get(key) > 59)
-                        throw new InvalidConfiguration("seconds must be within 0-59");
-                    revisionPlanSeconds = map.get(key);
-                }
-                case "max_dep" -> maxDeposit = map.get(key);
-                case "rev_cost" -> revisionCost = map.get(key);
-                case "interest_pct" -> interestPercentage = map.get(key);
-                default -> throw new InvalidConfiguration(String.format("invalid configuration key '%s'", key));
-            }
-        }
-    }
+    private static Configuration configuration;
 
-    public static void loadConfig(String config) {
+    public static Configuration loadConfig(String config) {
         Parser parser = new GrammarParser(new IterateTokenizer(config));
         ExecNode node = parser.parse();
-        Map<String, Long> map = nodeExecution(node);
-        mapToVariables(map);
+        Map<String, Long> map = nodesEvaluation(node);
+        configuration = new Configuration() {
+            @Override
+            public long rows() {
+                return map.getOrDefault("m", 20L);
+            }
+
+            @Override
+            public long cols() {
+                return map.getOrDefault("n", 15L);
+            }
+
+            @Override
+            public long initialPlanMinutes() {
+                return map.getOrDefault("init_plan_min", 5L);
+            }
+
+            @Override
+            public long initialPlanSeconds() {
+                return map.getOrDefault("init_plan_sec", 0L);
+            }
+
+            @Override
+            public long initialBudget() {
+                return map.getOrDefault("init_budget", 10000L);
+            }
+
+            @Override
+            public long initialDeposit() {
+                return map.getOrDefault("init_center_dep", 100L);
+            }
+
+            @Override
+            public long revisionPlanMinutes() {
+                return map.getOrDefault("plan_rev_min", 30L);
+            }
+
+            @Override
+            public long revisionPlanSeconds() {
+                return map.getOrDefault("plan_rev_sec", 0L);
+            }
+
+            @Override
+            public long revisionCost() {
+                return map.getOrDefault("rev_cost", 100L);
+            }
+
+            @Override
+            public long maxDeposit() {
+                return map.getOrDefault("max_dep", 1000000L);
+            }
+
+            @Override
+            public long interestPercentage() {
+                return map.getOrDefault("interest_pct", 5L);
+            }
+        };
+        return configuration;
     }
 
     /**
@@ -76,9 +96,9 @@ public final class GameUtils {
      */
     public static List<Region> createTerritory() {
         territory = new ArrayList<>();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                territory.add(new RegionProps(Point.of(i, j)));
+        for (int i = 0; i < configuration.rows(); i++) {
+            for (int j = 0; j < configuration.cols(); j++) {
+                territory.add(new RegionProps(Point.of(j, i)));
             }
         }
         return territory;
@@ -94,6 +114,7 @@ public final class GameUtils {
         return region;
     }
 
+    private static int id = 1;
     /**
      * create new a player
      *
@@ -104,30 +125,22 @@ public final class GameUtils {
             return null;
 
         Region region = pickUnoccupiedRegion();
-        Player player = new PlayerProps(id++, name, initialBudget, region);
+        Player player = new PlayerProps(id++, name, configuration.initialBudget(), region);
         region.updateOwner(player);
-        region.updateDeposit(initialDeposit);
+        region.updateDeposit(configuration.initialDeposit());
         return player;
     }
 
-    public static long getRows() {
-        return rows;
+    /**
+     * create new game instance
+     * @param namePlayer1 name of player 1
+     * @param namePlayer2 name of player 2
+     * @return instance of the game
+     */
+    public static Game createGame(String namePlayer1, String namePlayer2) {
+        List<Region> territory = createTerritory();
+        Player player1 = createPlayer(namePlayer1);
+        Player player2 = createPlayer(namePlayer2);
+        return new GameProps(configuration, territory, player1, player2);
     }
-
-    public static long getCols() {
-        return cols;
-    }
-
-    public static long getInterestPercentage() {
-        return interestPercentage;
-    }
-
-    public static long getMaxDeposit() {
-        return maxDeposit;
-    }
-
-    public static long getInitialBudget() {
-        return initialBudget;
-    }
-
 }

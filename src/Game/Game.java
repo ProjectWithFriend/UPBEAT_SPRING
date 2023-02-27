@@ -53,8 +53,10 @@ public interface Game {
      */
     long opponent();
 
-    long getCurrentPlayerID();
-
+    /**
+     * submit a plan of current player to the game
+     * @param constructionPlan a plan
+     */
     void submitPlan(String constructionPlan);
 
     List<Region> getTerritory();

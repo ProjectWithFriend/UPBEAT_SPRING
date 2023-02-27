@@ -54,9 +54,9 @@ public final class GameTest {
 
     private static List<TestRegion> mockTerritory(int rows, int cols) {
         List<TestRegion> regions = new ArrayList<>(rows * cols);
-        for (int j = 0; j < cols; j++) {
-            for (int i = 0; i < rows; i++) {
-                Point location = new EuclidianPoint(i, j);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                Point location = new EuclidianPoint(j, i);
                 regions.add(mockRegion(location));
             }
         }
@@ -64,7 +64,7 @@ public final class GameTest {
     }
 
     private static TestPlayer mockPlayer(TestRegion initCenterLocation) {
-        return new TestPlayer(initCenterLocation) {
+        TestPlayer player = new TestPlayer(initCenterLocation) {
 
             @Override
             public boolean isAlive() {
@@ -106,6 +106,67 @@ public final class GameTest {
                 return cityCenter;
             }
         };
+        initCenterLocation.updateOwner(player);
+        return player;
+    }
+
+    private static Configuration mockConfiguration() {
+        return new Configuration() {
+            @Override
+            public long rows() {
+                return 4;
+            }
+
+            @Override
+            public long cols() {
+                return 4;
+            }
+
+            @Override
+            public long initialPlanMinutes() {
+                return 10;
+            }
+
+            @Override
+            public long initialPlanSeconds() {
+                return 0;
+            }
+
+            @Override
+            public long initialBudget() {
+                return 0;
+            }
+
+            @Override
+            public long initialDeposit() {
+                return 0;
+            }
+
+            @Override
+            public long revisionPlanMinutes() {
+                return 10;
+            }
+
+            @Override
+            public long revisionPlanSeconds() {
+                return 0;
+            }
+
+            @Override
+            public long revisionCost() {
+                return 10;
+            }
+
+            @Override
+            public long maxDeposit() {
+                return 1000;
+            }
+
+            @Override
+            public long interestPercentage() {
+                return 1;
+            }
+        };
     }
 
     @BeforeEach
@@ -115,7 +176,7 @@ public final class GameTest {
         player2 = mockPlayer(territory.get(7));
         List<Region> territoryRegion = new ArrayList<>(territory.size());
         territoryRegion.addAll(territory);
-        game = new GameProps(territoryRegion, player1, player2, 4, 4);
+        game = new GameProps(mockConfiguration(), territoryRegion, player1, player2);
     }
 
     @Test
@@ -193,7 +254,6 @@ public final class GameTest {
         game.moveCityCrew(Point.of(3, 2));
         game.relocate();
         assertEquals(0, game.getBudget());
-        return;
     }
 
     @Test
@@ -206,7 +266,7 @@ public final class GameTest {
         game.moveCityCrew(Point.of(1, 1));
         game.attack(Direction.DownRight, 100);
         assertEquals(899, game.getBudget());
-        assertEquals(null, territory.get(6).getOwner());
+        assertNull(territory.get(6).getOwner());
 
         //update budget to 0
         player1.updateBudget(-899);
@@ -310,6 +370,7 @@ public final class GameTest {
         assertTrue(game.move(Direction.DownRight));
         assertEquals(Point.of(1, 1), game.getCityCrew().getLocation());
 
+        // move all directions
         currentPlayer.budget = 6;
         assertTrue(game.move(Direction.UpLeft));
         assertEquals(Point.of(0, 0), game.getCityCrew().getLocation());
@@ -325,6 +386,32 @@ public final class GameTest {
         assertEquals(Point.of(2, 0), game.getCityCrew().getLocation());
         assertTrue(game.move(Direction.DownLeft));
         assertEquals(Point.of(1, 1), game.getCityCrew().getLocation());
+
+        // move 2 steps
+        currentPlayer.budget = 4;
+        assertTrue(game.move(Direction.DownRight));
+        assertTrue(game.move(Direction.DownRight));
+        assertEquals(Point.of(3, 2), game.getCityCrew().getLocation());
+        assertTrue(game.move(Direction.UpLeft));
+        assertTrue(game.move(Direction.UpLeft));
+        assertEquals(Point.of(1, 1), game.getCityCrew().getLocation());
+
+        currentPlayer.budget = 4;
+        assertTrue(game.move(Direction.Down));
+        assertTrue(game.move(Direction.Down));
+        assertEquals(Point.of(1, 3), game.getCityCrew().getLocation());
+        assertTrue(game.move(Direction.Up));
+        assertTrue(game.move(Direction.Up));
+        assertEquals(Point.of(1, 1), game.getCityCrew().getLocation());
+
+        // move into opponent region
+        currentPlayer.budget = 2;
+        assertTrue(game.move(Direction.DownRight));
+        assertEquals(Point.of(2, 1), game.getCityCrew().getLocation());
+        assertTrue(game.move(Direction.UpRight));
+        assertEquals(Point.of(2, 1), game.getCityCrew().getLocation());
+        assertFalse(game.move(Direction.UpRight));
+        assertEquals(Point.of(2, 1), game.getCityCrew().getLocation());
     }
 
     private static abstract class TestRegion implements Region {
@@ -341,5 +428,10 @@ public final class GameTest {
             cityCenter.updateOwner(this);
             this.cityCenter = cityCenter;
         }
+    }
+
+    @Test
+    public void testInterestPercentage() {
+
     }
 }

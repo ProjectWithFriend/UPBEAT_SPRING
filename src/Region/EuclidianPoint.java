@@ -1,23 +1,20 @@
 package Region;
 
-import Region.*;
-import Game.Direction;
-
 public class EuclidianPoint implements Point {
-    private final int x, y;
+    private final long x, y;
 
-    public EuclidianPoint(int x, int y) {
+    public EuclidianPoint(long x, long y) {
         this.x = x;
         this.y = y;
     }
 
     @Override
-    public int getX() {
+    public long getX() {
         return x;
     }
 
     @Override
-    public int getY() {
+    public long getY() {
         return y;
     }
 

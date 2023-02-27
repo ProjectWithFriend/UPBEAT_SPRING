@@ -3,14 +3,14 @@ package Region;
 import Game.*;
 
 public interface Point {
-    int getX();
+    long getX();
 
-    int getY();
+    long getY();
 
     default Point direction(Direction direction) {
         boolean isEven = getX() % 2 == 0;
-        int x = getX();
-        int y = getY();
+        long x = getX();
+        long y = getY();
         return switch (direction) {
             case Up -> Point.of(x, y - 1);
             case UpRight -> isEven ? Point.of(x + 1, y) : Point.of(x + 1, y - 1);
@@ -21,11 +21,11 @@ public interface Point {
         };
     }
 
-    default boolean isValidPoint(int rows, int cols) {
+    default boolean isValidPoint(long rows, long cols) {
         return getX() >= 0 && getY() >= 0 && getX() < rows && getY() < cols;
     }
 
-    static Point of(int x, int y) {
+    static Point of(long x, long y) {
         return new EuclidianPoint(x, y);
     }
 }

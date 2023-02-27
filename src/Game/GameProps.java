@@ -5,7 +5,7 @@ import Parser.GrammarParser;
 import Parser.Parser;
 import Player.Player;
 import Region.Point;
-import Region.Region;
+import Region.*;
 import Tokenizer.IterateTokenizer;
 
 import java.util.*;
@@ -15,16 +15,15 @@ public class GameProps implements Game {
     private final Player player2;
     private final List<Region> territory;
     private final int actionCost = 1;
-    private final int rows, cols;
     private Player currentPlayer;
     private Region cityCrew;
+    private final Configuration config;
 
-    public GameProps(List<Region> territory, Player player1, Player player2, int rows, int cols) {
+    public GameProps(Configuration config, List<Region> territory, Player player1, Player player2) {
+        this.config = config;
         this.territory = territory;
         this.player1 = player1;
         this.player2 = player2;
-        this.rows = rows;
-        this.cols = cols;
         this.currentPlayer = this.player1;
     }
 
@@ -48,7 +47,7 @@ public class GameProps implements Game {
         Point currentLocation = region.getLocation();
         for (Direction direction : Direction.values()) {
             Point newLocation = currentLocation.direction(direction);
-            if (!newLocation.isValidPoint(rows, cols))
+            if (!newLocation.isValidPoint(config.rows(), config.cols()))
                 continue;
             adjacentRegions.add(getRegion(newLocation));
         }
@@ -87,9 +86,7 @@ public class GameProps implements Game {
         int cost = 5 * distance + 10;
 
         //validate if the player has enough budget
-        if (currentPlayer.getBudget() < cost + actionCost) {
-            return;
-        } else {
+        if (currentPlayer.getBudget() >= cost + actionCost) {
             currentPlayer.updateBudget(-cost - actionCost);
             //update the city center location of current player
             currentPlayer.getCityCenter().updateOwner(null);
@@ -103,7 +100,7 @@ public class GameProps implements Game {
         Point currentLocation = cityCrew.getLocation();
         int distance = 0;
         Point newLocation = currentLocation.direction(direction);
-        while (newLocation.isValidPoint(rows, cols)) {
+        while (newLocation.isValidPoint(config.rows(), config.cols())) {
             Region region = getRegion(newLocation);
             if (region.getOwner() != null && region.getOwner() != currentPlayer)
                 return ((distance + 1L) * 100 + (long) (Math.log10(region.getDeposit() + 1)) + 1);
@@ -124,8 +121,8 @@ public class GameProps implements Game {
             for (int i = 0; i < 6; i++) {
                 if (spreads[i] == null)
                     continue;
-                int index = spreads[i].getY() * cols + spreads[i].getX();
-                Player owner = territory.get(index).getOwner();
+                long index = spreads[i].getY() * config.cols() + spreads[i].getX();
+                Player owner = territory.get((int) index).getOwner();
                 if (owner != null && owner != currentPlayer)
                     return i + 1L + distance * 10L;
                 spreads[i] = spreads[i].direction(Direction.values()[i]);
@@ -133,7 +130,7 @@ public class GameProps implements Game {
             for (int i = 0; i < 6; i++) {
                 if (spreads[i] == null)
                     continue;
-                spreads[i] = spreads[i].isValidPoint(rows, cols) ? spreads[i] : null;
+                spreads[i] = spreads[i].isValidPoint(config.rows(), config.cols()) ? spreads[i] : null;
             }
             stop = true;
             for (Point point : spreads)
@@ -143,10 +140,10 @@ public class GameProps implements Game {
         return 0;
     }
 
-    @Override
-    public long getCurrentPlayerID() {
-        return currentPlayer.getID();
-    }
+//    @Override
+//    public long getCurrentPlayerID() {
+//        return currentPlayer.getID();
+//    }
 
     @Override
     public void submitPlan(String constructionPlan) {
@@ -166,7 +163,8 @@ public class GameProps implements Game {
 
     @Override
     public Region getRegion(Point point) {
-        return territory.get(point.getY() * cols + point.getX());
+        long index = point.getY() * config.cols() + point.getX();
+        return territory.get((int) index);
     }
 
     @Override
@@ -191,7 +189,7 @@ public class GameProps implements Game {
     }
 
     public void moveCityCrew(Point point) {
-        if (!point.isValidPoint(rows, cols))
+        if (!point.isValidPoint(config.rows(), config.cols()))
             return;
         cityCrew = getRegion(point);
     }
@@ -202,8 +200,11 @@ public class GameProps implements Game {
             return false;
         currentPlayer.updateBudget(-actionCost);
         Point newLocation = cityCrew.getLocation().direction(direction);
-        if (newLocation.isValidPoint(rows, cols))
-            cityCrew = getRegion(newLocation);
+        if (newLocation.isValidPoint(config.rows(), config.cols())) {
+            Region newRegion = getRegion(newLocation);
+            if (newRegion.getOwner() == null || newRegion.getOwner() == currentPlayer)
+                cityCrew = newRegion;
+        }
         return true;
     }
 
@@ -215,14 +216,14 @@ public class GameProps implements Game {
     @Override
     public Map<String, Long> getSpecialIdentifiers() {
         Map<String, Long> map = new HashMap<>();
-        map.put("rows", GameUtils.getRows());
-        map.put("cols", GameUtils.getCols());
-        map.put("currow", (long) cityCrew.getLocation().getX());
-        map.put("curcol", (long) cityCrew.getLocation().getY());
+        map.put("rows", config.cols());
+        map.put("cols", config.cols());
+        map.put("currow", cityCrew.getLocation().getX());
+        map.put("curcol", cityCrew.getLocation().getY());
         map.put("budget", currentPlayer.getBudget());
         map.put("deposit", cityCrew.getDeposit());
-        map.put("int", GameUtils.getInterestPercentage());
-        map.put("maxdeposit", GameUtils.getMaxDeposit());
+        map.put("int", config.interestPercentage());
+        map.put("maxdeposit", config.maxDeposit());
         map.put("random", new Random().nextLong(1000));
         return map;
     }
@@ -240,17 +241,16 @@ public class GameProps implements Game {
         Point targetLocation = cityCrewLocation.direction(direction);
 
         //validate if the target location is valid
-        if (!targetLocation.isValidPoint(rows, cols)) {
-            return;
-        } else {
-            if (value < territory.get(targetLocation.getY() * cols + targetLocation.getX()).getDeposit()) {
+        if (targetLocation.isValidPoint(config.rows(), config.cols())) {
+            Region targetRegion = getRegion(targetLocation);
+            if (value < targetRegion.getDeposit()) {
                 //update the budget of current player
                 currentPlayer.updateBudget(-actionCost - value);
                 //update the deposit of the target region
-                territory.get(targetLocation.getY() * cols + targetLocation.getX()).updateDeposit(-value);
-            } else if (value >= territory.get(targetLocation.getY() * cols + targetLocation.getX()).getDeposit()) {
-                territory.get(targetLocation.getY() * cols + targetLocation.getX()).updateDeposit(-value);
-                territory.get(targetLocation.getY() * cols + targetLocation.getX()).updateOwner(null);
+                targetRegion.updateDeposit(-value);
+            } else if (value >= targetRegion.getDeposit()) {
+                targetRegion.updateDeposit(-value);
+                targetRegion.updateOwner(null);
                 currentPlayer.updateBudget(-actionCost - value);
             }
         }
