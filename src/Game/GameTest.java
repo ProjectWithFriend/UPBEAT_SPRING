@@ -36,7 +36,7 @@ public final class GameTest {
             @Override
             public void updateDeposit(long amount) {
                 deposit += amount;
-                if(deposit < 0)
+                if (deposit < 0)
                     deposit = 0;
             }
 
@@ -204,14 +204,14 @@ public final class GameTest {
         territory.get(6).updateOwner(player2);
         territory.get(6).updateDeposit(100);
         game.moveCityCrew(Point.of(1, 1));
-        game.attack(Direction.DownRight,100);
+        game.attack(Direction.DownRight, 100);
         assertEquals(899, game.getBudget());
         assertEquals(null, territory.get(6).getOwner());
 
         //update budget to 0
         player1.updateBudget(-899);
         territory.get(6).updateOwner(player2);
-        game.attack(Direction.DownRight,100);
+        game.attack(Direction.DownRight, 100);
         assertEquals(0, game.getBudget());
         assertEquals(player2, territory.get(6).getOwner());
 
@@ -219,12 +219,12 @@ public final class GameTest {
         player1.updateBudget(1000);
         territory.get(1).updateOwner(player2);
         territory.get(1).updateDeposit(10000);
-        game.attack(Direction.Up,10000);
+        game.attack(Direction.Up, 10000);
         assertEquals(999, game.getBudget());
         assertEquals(player2, territory.get(1).getOwner());
-        game.attack(Direction.Up,999);
+        game.attack(Direction.Up, 999);
         assertEquals(998, game.getBudget());
-        game.attack(Direction.Up,997);
+        game.attack(Direction.Up, 997);
         assertEquals(0, game.getBudget());
         assertEquals(player2, territory.get(1).getOwner());
         assertEquals(9003, territory.get(1).getDeposit());
@@ -278,6 +278,53 @@ public final class GameTest {
         game.moveCityCrew(Point.of(1, 2));
         assertEquals(22, game.opponent());
 
+    }
+
+    @Test
+    public void testMove() {
+        game.beginTurn();
+        TestPlayer currentPlayer = player1;
+        assertFalse(game.move(Direction.Up));
+        assertFalse(game.move(Direction.UpLeft));
+        assertFalse(game.move(Direction.UpRight));
+        assertFalse(game.move(Direction.Down));
+        assertFalse(game.move(Direction.DownLeft));
+        assertFalse(game.move(Direction.DownRight));
+
+        currentPlayer.budget = 2;
+        assertEquals(Point.of(0, 1), game.getCityCrew().getLocation());
+
+        assertTrue(game.move(Direction.Up)); // move one up
+        assertEquals(Point.of(0, 0), game.getCityCrew().getLocation());
+        assertEquals(1, currentPlayer.budget);
+
+        assertTrue(game.move(Direction.Up)); // act like no-op
+        assertEquals(Point.of(0, 0), game.getCityCrew().getLocation());
+        assertEquals(0, currentPlayer.budget);
+
+        assertFalse(game.move(Direction.Up));
+        assertEquals(Point.of(0, 0), game.getCityCrew().getLocation());
+        assertEquals(0, currentPlayer.budget);
+
+        currentPlayer.budget = 1;
+        assertTrue(game.move(Direction.DownRight));
+        assertEquals(Point.of(1, 1), game.getCityCrew().getLocation());
+
+        currentPlayer.budget = 6;
+        assertTrue(game.move(Direction.UpLeft));
+        assertEquals(Point.of(0, 0), game.getCityCrew().getLocation());
+        assertTrue(game.move(Direction.DownRight));
+        assertEquals(Point.of(1, 1), game.getCityCrew().getLocation());
+
+        assertTrue(game.move(Direction.Up));
+        assertEquals(Point.of(1, 0), game.getCityCrew().getLocation());
+        assertTrue(game.move(Direction.Down));
+        assertEquals(Point.of(1, 1), game.getCityCrew().getLocation());
+
+        assertTrue(game.move(Direction.UpRight));
+        assertEquals(Point.of(2, 0), game.getCityCrew().getLocation());
+        assertTrue(game.move(Direction.DownLeft));
+        assertEquals(Point.of(1, 1), game.getCityCrew().getLocation());
     }
 
     private static abstract class TestRegion implements Region {

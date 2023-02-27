@@ -32,7 +32,7 @@ public class PlayerProps implements Player {
 
     @Override
     public void updateBudget(long amount) {
-        this.budget += amount;
+        budget = Math.max(0, budget + amount);
     }
 
 

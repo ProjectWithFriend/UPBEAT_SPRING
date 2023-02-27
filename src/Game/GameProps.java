@@ -77,19 +77,19 @@ public class GameProps implements Game {
     @Override
     public void relocate() {
         //check if the player has enough budget
-        if(currentPlayer.getBudget() < 1)
+        if (currentPlayer.getBudget() < 1)
             return;
 
         Point currentCityCrewLocation = cityCrew.getLocation();
         Point currentCityCenter = currentPlayer.getCityCenter().getLocation();
         int distance = (int) Math.floor(Math.sqrt(Math.pow(currentCityCrewLocation.getX() - currentCityCenter.getX(), 2) + Math.pow(currentCityCrewLocation.getY() - currentCityCenter.getY(), 2)));
-        if(distance < 0) distance = 1;
-        int cost = 5*distance + 10;
+        if (distance < 0) distance = 1;
+        int cost = 5 * distance + 10;
 
         //validate if the player has enough budget
-        if(currentPlayer.getBudget() < cost + actionCost){
+        if (currentPlayer.getBudget() < cost + actionCost) {
             return;
-        }else{
+        } else {
             currentPlayer.updateBudget(-cost - actionCost);
             //update the city center location of current player
             currentPlayer.getCityCenter().updateOwner(null);
@@ -106,7 +106,7 @@ public class GameProps implements Game {
         while (newLocation.isValidPoint(rows, cols)) {
             Region region = getRegion(newLocation);
             if (region.getOwner() != null && region.getOwner() != currentPlayer)
-                return ((distance + 1L)*100 + (long)(Math.log10(region.getDeposit()+1))+1);
+                return ((distance + 1L) * 100 + (long) (Math.log10(region.getDeposit() + 1)) + 1);
             distance++;
             newLocation = newLocation.direction(direction);
         }
@@ -193,12 +193,18 @@ public class GameProps implements Game {
     public void moveCityCrew(Point point) {
         if (!point.isValidPoint(rows, cols))
             return;
-        cityCrew = territory.get(point.getY() * cols + point.getX());
+        cityCrew = getRegion(point);
     }
 
     @Override
     public boolean move(Direction direction) {
-        throw new GameException.NotImplemented();
+        if (currentPlayer.getBudget() < actionCost)
+            return false;
+        currentPlayer.updateBudget(-actionCost);
+        Point newLocation = cityCrew.getLocation().direction(direction);
+        if (newLocation.isValidPoint(rows, cols))
+            cityCrew = getRegion(newLocation);
+        return true;
     }
 
     @Override
@@ -224,7 +230,7 @@ public class GameProps implements Game {
     @Override
     public void attack(Direction direction, long value) {
         //validate if the player has enough budget
-        if(value + actionCost > currentPlayer.getBudget() || value < 0){
+        if (value + actionCost > currentPlayer.getBudget() || value < 0) {
             currentPlayer.updateBudget(-actionCost);
             return;
         }
@@ -234,17 +240,17 @@ public class GameProps implements Game {
         Point targetLocation = cityCrewLocation.direction(direction);
 
         //validate if the target location is valid
-        if(!targetLocation.isValidPoint(rows, cols)){
+        if (!targetLocation.isValidPoint(rows, cols)) {
             return;
-        }else{
-            if(value < territory.get(targetLocation.getY()*cols + targetLocation.getX()).getDeposit()){
+        } else {
+            if (value < territory.get(targetLocation.getY() * cols + targetLocation.getX()).getDeposit()) {
                 //update the budget of current player
                 currentPlayer.updateBudget(-actionCost - value);
                 //update the deposit of the target region
-                territory.get(targetLocation.getY()*cols + targetLocation.getX()).updateDeposit(-value);
-            }else if(value >= territory.get(targetLocation.getY()*cols + targetLocation.getX()).getDeposit()){
-                territory.get(targetLocation.getY()*cols + targetLocation.getX()).updateDeposit(-value);
-                territory.get(targetLocation.getY()*cols + targetLocation.getX()).updateOwner(null);
+                territory.get(targetLocation.getY() * cols + targetLocation.getX()).updateDeposit(-value);
+            } else if (value >= territory.get(targetLocation.getY() * cols + targetLocation.getX()).getDeposit()) {
+                territory.get(targetLocation.getY() * cols + targetLocation.getX()).updateDeposit(-value);
+                territory.get(targetLocation.getY() * cols + targetLocation.getX()).updateOwner(null);
                 currentPlayer.updateBudget(-actionCost - value);
             }
         }
