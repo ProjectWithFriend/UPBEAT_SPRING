@@ -6,10 +6,10 @@ import static AST.Node.*;
 import static AST.ASTException.*;
 
 public class AtomicNode extends ExprNode {
-    private final int value;
+    private final long value;
     private final String identifier;
 
-    public AtomicNode(int value) {
+    public AtomicNode(long value) {
         this.value = value;
         this.identifier = null;
     }

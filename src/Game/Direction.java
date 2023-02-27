@@ -2,9 +2,9 @@ package Game;
 
 public enum Direction {
     Up,
-    Down,
-    UpLeft,
     UpRight,
+    DownRight,
+    Down,
     DownLeft,
-    DownRight
+    UpLeft,
 }

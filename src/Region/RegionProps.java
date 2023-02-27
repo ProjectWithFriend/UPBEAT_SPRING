@@ -3,11 +3,11 @@ package Region;
 import Game.GameException;
 import Player.*;
 public class RegionProps implements Region {
-    private int location;
+    private final Point location;
     private long deposit;
     private Player owner;
 
-    public RegionProps(int location){
+    public RegionProps(Point location){
         this.location = location;
         this.deposit = 0;
         this.owner = null;
@@ -26,6 +26,9 @@ public class RegionProps implements Region {
     @Override
     public void updateDeposit(long amount) {
         this.deposit += amount;
+        if(this.deposit < 0){
+            this.deposit = 0;
+        }
     }
 
     @Override
@@ -34,12 +37,7 @@ public class RegionProps implements Region {
     }
 
     @Override
-    public int getLocation() {
+    public Point getLocation() {
         return this.location;
-    }
-
-    @Override
-    public long getNearby() {
-        throw new GameException.NotImplemented();
     }
 }

@@ -1,6 +1,6 @@
 package Game;
 
-import Region.Region;
+import Region.*;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +19,9 @@ public interface Game {
     /**
      * retrieves deposits from the current region occupied by the city crew.
      * @param value collection amount
+     * @return result of collect, true = success, false = fail
      */
-    void collect(long value);
+    boolean collect(long value);
 
     /**
      * adds more deposits to the current region occupied by the city crew.
@@ -52,15 +53,17 @@ public interface Game {
      */
     long opponent();
 
-    long getCurrentPlayerID();
-
+    /**
+     * submit a plan of current player to the game
+     * @param constructionPlan a plan
+     */
     void submitPlan(String constructionPlan);
 
     List<Region> getTerritory();
 
-    Region getRegion(int index);
+    Region getRegion(Point point);
 
     long getBudget();
 
-    void endTurn();
+    Region getCityCrew();
 }

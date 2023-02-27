@@ -11,7 +11,5 @@ public interface Region {
 
     void updateOwner(Player owner);
 
-    int getLocation();
-
-    long getNearby();
+    Point getLocation();
 }
