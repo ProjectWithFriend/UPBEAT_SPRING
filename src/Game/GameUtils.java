@@ -86,6 +86,8 @@ public final class GameUtils {
                 return map.getOrDefault("interest_pct", 5L);
             }
         };
+        if (configuration.initialPlanSeconds() >= 60) throw new InvalidConfiguration();
+        if (configuration.revisionPlanSeconds() >= 60) throw new InvalidConfiguration();
         return configuration;
     }
 
@@ -115,6 +117,7 @@ public final class GameUtils {
     }
 
     private static int id = 1;
+
     /**
      * create new a player
      *
@@ -125,19 +128,38 @@ public final class GameUtils {
             return null;
 
         Region region = pickUnoccupiedRegion();
-        Player player = new PlayerProps(id++, name, configuration.initialBudget(), region);
-        region.updateOwner(player);
+        Player player = new PlayerProps(id++, name, configuration.initialBudget());
+        region.setCityCenter(player);
         region.updateDeposit(configuration.initialDeposit());
         return player;
     }
 
+    private static void defaultConfiguration() {
+        configuration = loadConfig("""
+                m=20
+                n=15
+                init_plan_min=5
+                init_plan_sec=0
+                init_budget=10000
+                init_center_dep=100
+                plan_rev_min=30
+                plan_rev_sec=0
+                rev_cost=100
+                max_dep=1000000
+                interest_pct=5
+                """);
+    }
+
     /**
      * create new game instance
+     *
      * @param namePlayer1 name of player 1
      * @param namePlayer2 name of player 2
      * @return instance of the game
      */
     public static Game createGame(String namePlayer1, String namePlayer2) {
+        if (configuration == null)
+            defaultConfiguration();
         List<Region> territory = createTerritory();
         Player player1 = createPlayer(namePlayer1);
         Player player2 = createPlayer(namePlayer2);

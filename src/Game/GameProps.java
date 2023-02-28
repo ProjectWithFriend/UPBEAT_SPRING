@@ -17,6 +17,8 @@ public class GameProps implements Game {
     private final int actionCost = 1;
     private Player currentPlayer;
     private Region cityCrew;
+    private Map<Player, Region> cityCenterRegion;
+    private Region player2CityCenter;
     private final Configuration config;
 
     public GameProps(Configuration config, List<Region> territory, Player player1, Player player2) {
@@ -25,6 +27,14 @@ public class GameProps implements Game {
         this.player1 = player1;
         this.player2 = player2;
         this.currentPlayer = this.player1;
+        this.cityCenterRegion = new HashMap<>();
+    }
+
+    private void getCityCenters() {
+        for (Region region : territory) {
+            if (region.getIsCityCenter())
+                cityCenterRegion.put(region.getOwner(), region);
+        }
     }
 
     @Override
@@ -49,7 +59,7 @@ public class GameProps implements Game {
             Point newLocation = currentLocation.direction(direction);
             if (!newLocation.isValidPoint(config.rows(), config.cols()))
                 continue;
-            adjacentRegions.add(getRegion(newLocation));
+            adjacentRegions.add(regionAt(newLocation));
         }
         return adjacentRegions;
     }
@@ -80,7 +90,7 @@ public class GameProps implements Game {
             return;
 
         Point currentCityCrewLocation = cityCrew.getLocation();
-        Point currentCityCenter = currentPlayer.getCityCenter().getLocation();
+        Point currentCityCenter = cityCenterRegion.get(currentPlayer).getLocation();
         int distance = (int) Math.floor(Math.sqrt(Math.pow(currentCityCrewLocation.getX() - currentCityCenter.getX(), 2) + Math.pow(currentCityCrewLocation.getY() - currentCityCenter.getY(), 2)));
         if (distance < 0) distance = 1;
         int cost = 5 * distance + 10;
@@ -89,9 +99,10 @@ public class GameProps implements Game {
         if (currentPlayer.getBudget() >= cost + actionCost) {
             currentPlayer.updateBudget(-cost - actionCost);
             //update the city center location of current player
-            currentPlayer.getCityCenter().updateOwner(null);
+            cityCenterRegion.get(currentPlayer).updateOwner(null);
             cityCrew.updateOwner(currentPlayer);
-            currentPlayer.relocate(cityCrew);
+            cityCenterRegion.put(currentPlayer, cityCrew);
+            cityCenterRegion.get(currentPlayer).setCityCenter(currentPlayer);
         }
     }
 
@@ -101,7 +112,7 @@ public class GameProps implements Game {
         int distance = 0;
         Point newLocation = currentLocation.direction(direction);
         while (newLocation.isValidPoint(config.rows(), config.cols())) {
-            Region region = getRegion(newLocation);
+            Region region = regionAt(newLocation);
             if (region.getOwner() != null && region.getOwner() != currentPlayer)
                 return ((distance + 1L) * 100 + (long) (Math.log10(region.getDeposit() + 1)) + 1);
             distance++;
@@ -157,18 +168,29 @@ public class GameProps implements Game {
     }
 
     @Override
-    public Region getRegion(Point point) {
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    @Override
+    public Player getPlayer2() {
+        return player2;
+    }
+
+    @Override
+    public Region regionAt(Point point) {
         long index = point.getY() * config.cols() + point.getX();
         return territory.get((int) index);
     }
 
     @Override
-    public long getBudget() {
+    public long budget() {
         return currentPlayer.getBudget();
     }
 
     public void beginTurn() {
-        cityCrew = currentPlayer.getCityCenter();
+        getCityCenters();
+        cityCrew = cityCenterRegion.get(currentPlayer);
     }
 
     public void endTurn() {
@@ -179,14 +201,14 @@ public class GameProps implements Game {
     }
 
     @Override
-    public Region getCityCrew() {
+    public Region cityCrewRegion() {
         return cityCrew;
     }
 
     public void moveCityCrew(Point point) {
         if (!point.isValidPoint(config.rows(), config.cols()))
             return;
-        cityCrew = getRegion(point);
+        cityCrew = regionAt(point);
     }
 
     @Override
@@ -196,7 +218,7 @@ public class GameProps implements Game {
         currentPlayer.updateBudget(-actionCost);
         Point newLocation = cityCrew.getLocation().direction(direction);
         if (newLocation.isValidPoint(config.rows(), config.cols())) {
-            Region newRegion = getRegion(newLocation);
+            Region newRegion = regionAt(newLocation);
             if (newRegion.getOwner() == null || newRegion.getOwner() == currentPlayer)
                 cityCrew = newRegion;
         }
@@ -204,12 +226,12 @@ public class GameProps implements Game {
     }
 
     @Override
-    public Map<String, Long> getIdentifiers() {
-        return currentPlayer.getIdentifiers();
+    public Map<String, Long> identifiers() {
+        return currentPlayer.identifiers();
     }
 
     @Override
-    public Map<String, Long> getSpecialIdentifiers() {
+    public Map<String, Long> specialIdentifiers() {
         Map<String, Long> map = new HashMap<>();
         map.put("rows", config.cols());
         map.put("cols", config.cols());
@@ -237,7 +259,7 @@ public class GameProps implements Game {
 
         //validate if the target location is valid
         if (targetLocation.isValidPoint(config.rows(), config.cols())) {
-            Region targetRegion = getRegion(targetLocation);
+            Region targetRegion = regionAt(targetLocation);
             if (value < targetRegion.getDeposit()) {
                 //update the budget of current player
                 currentPlayer.updateBudget(-actionCost - value);

@@ -49,7 +49,7 @@ public class GrammarParser implements Parser {
     public ExecNode parse() {
         ExecNode actions = parsePlan();
         if (tkz.hasNext())
-            throw new ASTException.LeftoverTokenException(tkz.peek()); // TODO: make exception
+            throw new ASTException.LeftoverTokenException(tkz.peek());
         return actions;
     }
 

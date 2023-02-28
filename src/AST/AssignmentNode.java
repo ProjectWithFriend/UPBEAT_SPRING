@@ -17,7 +17,7 @@ public class AssignmentNode extends ExecNode {
     }
 
     public ExecNode execute(Game game) {
-        Map<String, Long> memory = game.getIdentifiers();
+        Map<String, Long> memory = game.identifiers();
         memory.put(identifier, expression.eval(game));
         return next;
     }

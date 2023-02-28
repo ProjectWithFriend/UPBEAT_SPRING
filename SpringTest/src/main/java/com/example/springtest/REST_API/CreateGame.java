@@ -1,44 +1,37 @@
 package com.example.springtest.REST_API;
 
+import Game.*;
+import Region.*;
+import Player.*;
 import com.example.springtest.Exception.BadRequestException;
 import com.example.springtest.RequestBody.CreateGameReq;
 import com.example.springtest.Responses.CreateGameResp;
-import com.example.springtest.model.Player;
-import com.example.springtest.model.Region;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 public class CreateGame {
     @PostMapping("/createGame")
-    public ResponseEntity<Object> createGame(@RequestBody CreateGameReq req) {
+    public ResponseEntity<Game> createGame(@RequestBody CreateGameReq req) {
         try {
             if (req.getPlayer_2_name() == null || req.getPlayer_1_name() == null) {
-                //Handle from frontend already.
                 throw new BadRequestException("Player names cannot be null");
             } else {
-                //TODO: Create game and return response.
-                return null;
+                Game game = GameUtils.createGame(req.getPlayer_1_name(), req.getPlayer_2_name());
+                return ResponseEntity.ok(game);
             }
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
-    }
-
-
-    /*
-     * Mock API
-     */
-    @PostMapping("/createGameMock")
-    public ResponseEntity<Object> createGameMock() {
-        CreateGameResp resp = new CreateGameResp();
-        resp.setTerritory(Region.mockRegion());
-        resp.setPlayer1(Player.mockPlayer1());
-        resp.setPlayer2(Player.mockPlayer2());
-        return ResponseEntity.ok(resp);
     }
 }

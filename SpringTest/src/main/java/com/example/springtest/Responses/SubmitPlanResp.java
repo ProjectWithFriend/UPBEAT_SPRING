@@ -1,6 +1,8 @@
 package com.example.springtest.Responses;
 
-import com.example.springtest.model.Region;
+import Game.*;
+import Region.*;
+import Player.*;
 import lombok.Data;
 
 import java.util.List;

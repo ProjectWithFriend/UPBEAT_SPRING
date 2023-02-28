@@ -1,7 +1,7 @@
 package com.example.springtest.Responses;
 
-import com.example.springtest.model.Player;
-import com.example.springtest.model.Region;
+import Region.*;
+import Player.*;
 import lombok.Data;
 
 import java.util.List;
