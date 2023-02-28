@@ -17,8 +17,7 @@ public class GameProps implements Game {
     private final int actionCost = 1;
     private Player currentPlayer;
     private Region cityCrew;
-    private Map<Player, Region> cityCenterRegion;
-    private Region player2CityCenter;
+    private final Map<Player, Region> cityCenterRegion;
     private final Configuration config;
 
     public GameProps(Configuration config, List<Region> territory, Player player1, Player player2) {
@@ -96,7 +95,7 @@ public class GameProps implements Game {
         int cost = 5 * distance + 10;
 
         //validate if the player has enough budget
-        if (currentPlayer.getBudget() >= cost + actionCost) {
+        if (currentPlayer.getBudget() >= cost + actionCost && cityCrew.getOwner() != currentPlayer) {
             currentPlayer.updateBudget(-cost - actionCost);
             //update the city center location of current player
             cityCenterRegion.get(currentPlayer).updateOwner(null);
