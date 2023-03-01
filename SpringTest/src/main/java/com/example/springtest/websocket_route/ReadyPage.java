@@ -1,30 +1,39 @@
 package com.example.springtest.websocket_route;
 
+import com.example.springtest.Responses.PlayerSlot;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @MessageMapping("/ready")
 public class ReadyPage {
 
-    private SimpMessagingTemplate messagingTemplate;
+    private int numberOfConnectedPlayers = 0;
+    private int nowEditingPlayer = 0;
+    private PlayerSlot[] playerSlot = new PlayerSlot[2];
 
     @Autowired
-    public ReadyPage(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
-    }
+    private SimpMessagingTemplate simpleMessagingTemplate;
+
     @MessageMapping("/typeName")
     @SendTo("/topic/name")
     public NameResponse typeName(@RequestBody NameRequest nameRequest) {
         NameResponse nameResponse = new NameResponse();
         nameResponse.setNameP1(nameRequest.getNameP1());
         nameResponse.setNameP2(nameRequest.getNameP2());
-//        messagingTemplate.convertAndSend("/topic/name", nameResponse);
         return nameResponse;
     }
 
@@ -37,10 +46,56 @@ public class ReadyPage {
         return readyResponse;
     }
 
+
+    /*
+     * To send message to client to know what player slot is
+     */
+    @MessageMapping("/lockPlayerSlot")
+    public void playerSlot(final Principal principal){
+        simpleMessagingTemplate.convertAndSendToUser(principal.getName(), "/topic/playerSlot", playerSlot[nowEditingPlayer]);
+    }
+
+
     @MessageMapping("/start")
     @SendTo("/topic/gameStart")
-    public boolean gameStart(){
+    public boolean gameStart() {
         return true;
+    }
+
+    private void autoSelectSlot(Principal principal){
+        if(playerSlot[0] == null){
+            playerSlot[0] = new PlayerSlot();
+            playerSlot[0].setPlayerSlot(1);
+            playerSlot[0].setUuid(principal.getName());
+            nowEditingPlayer = 0;
+        }else if(playerSlot[1] == null){
+            playerSlot[1] = new PlayerSlot();
+            playerSlot[1].setPlayerSlot(2);
+            playerSlot[1].setUuid(principal.getName());
+            nowEditingPlayer = 1;
+        }
+    }
+
+    private void autoRemoveSlot(Principal principal){
+        if(playerSlot[0] != null && playerSlot[0].getUuid().equals(principal.getName())){
+            playerSlot[0] = null;
+        }else if(playerSlot[1] != null && playerSlot[1].getUuid().equals(principal.getName())){
+            playerSlot[1] = null;
+        }
+    }
+
+    @EventListener(SessionConnectedEvent.class)
+    public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+        numberOfConnectedPlayers++;
+        autoSelectSlot(event.getUser());
+//        System.out.println("Number of connected players: " + numberOfConnectedPlayers);
+    }
+
+    @EventListener(SessionDisconnectEvent.class)
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        numberOfConnectedPlayers--;
+        autoRemoveSlot(event.getUser());
+//        System.out.println("Number of connected players: " + numberOfConnectedPlayers);
     }
 }
 
