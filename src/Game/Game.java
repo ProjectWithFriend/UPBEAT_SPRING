@@ -78,4 +78,6 @@ public interface Game {
     long budget();
 
     Region cityCrewRegion();
+
+    Player getCurrentPlayer();
 }

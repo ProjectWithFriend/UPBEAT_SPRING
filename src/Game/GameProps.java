@@ -204,6 +204,11 @@ public class GameProps implements Game {
         return cityCrew;
     }
 
+    @Override
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     public void moveCityCrew(Point point) {
         if (!point.isValidPoint(config.rows(), config.cols()))
             return;
