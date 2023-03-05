@@ -73,8 +73,6 @@ public class GameProps implements Game {
         }
         if (!atLeastOneAdjacent) // adjacency requirement
             return;
-        if (cityCrew.getOwner() != currentPlayer) // no occupation requirement
-            return;
         if (currentPlayer.getBudget() < value) // budget requirement
             return;
         currentPlayer.updateBudget(-value);

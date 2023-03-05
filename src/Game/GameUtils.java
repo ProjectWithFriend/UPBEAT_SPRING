@@ -136,8 +136,8 @@ public final class GameUtils {
 
     private static void defaultConfiguration() {
         configuration = loadConfig("""
-                m=20
-                n=15
+                m=4
+                n=4
                 init_plan_min=5
                 init_plan_sec=0
                 init_budget=10000
