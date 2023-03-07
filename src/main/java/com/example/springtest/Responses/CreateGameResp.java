@@ -4,6 +4,7 @@ import Region.*;
 import Player.*;
 import lombok.Data;
 
+import javax.swing.plaf.synth.Region;
 import java.util.List;
 
 @Data

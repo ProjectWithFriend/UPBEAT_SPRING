@@ -2,7 +2,7 @@
   <artifact type="jar" name="UPBEAT">
     <output-path>$PROJECT_DIR$/out/artifacts/UPBEAT</output-path>
     <root id="archive" name="UPBEAT.jar">
-      <element id="module-output" name="UPBEAT" />
+      <element id="module-output" name="UPBEAT_SPRING" />
     </root>
   </artifact>
 </component>
