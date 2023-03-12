@@ -49,11 +49,14 @@ public class ReadyPage {
     }
 
     @SubscribeMapping("/entry")
-    public NameResponse entry() {
-        NameResponse nameResponse = new NameResponse();
-        nameResponse.setNameP1(nameP1);
-        nameResponse.setNameP2(nameP2);
-        return nameResponse;
+    public EntryResponse entry() {
+        EntryResponse entryResponse = new EntryResponse();
+        entryResponse.setNameP1(nameP1);
+        entryResponse.setNameP2(nameP2);
+        if(config != null){
+            entryResponse.setConfig(config);
+        }
+        return entryResponse;
     }
 
 
@@ -68,6 +71,9 @@ public class ReadyPage {
     @MessageMapping("/start")
     @SendTo("/topic/gameStart")
     public boolean gameStart() {
+        nameP1 = "";
+        nameP2 = "";
+        config = null;
         return true;
     }
 
@@ -119,4 +125,11 @@ class NameRequest {
 class NameResponse {
     private String nameP1;
     private String nameP2;
+}
+
+@Data
+class EntryResponse {
+    private String nameP1;
+    private String nameP2;
+    private updateConfig config;
 }
