@@ -1,5 +1,6 @@
 package com.example.springtest.websocket_route;
 
+import com.example.springtest.RequestBody.updateConfig;
 import com.example.springtest.Responses.PlayerSlot;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,12 @@ import java.security.Principal;
 @MessageMapping("/ready")
 public class ReadyPage {
 
+    private final PlayerSlot[] playerSlot = new PlayerSlot[2];
     private int numberOfConnectedPlayers = 0;
     private int nowEditingPlayer = 0;
-    private final PlayerSlot[] playerSlot = new PlayerSlot[2];
+    private updateConfig config;
+    private String nameP1 = "";
+    private String nameP2 = "";
 
     @Autowired
     private SimpMessagingTemplate simpleMessagingTemplate;
@@ -32,16 +36,27 @@ public class ReadyPage {
         NameResponse nameResponse = new NameResponse();
         nameResponse.setNameP1(nameRequest.getNameP1());
         nameResponse.setNameP2(nameRequest.getNameP2());
+        this.nameP1 = nameRequest.getNameP1();
+        this.nameP2 = nameRequest.getNameP2();
         return nameResponse;
     }
 
-    @MessageMapping("/changeReady")
-    @SendTo("/topic/ready")
-    public ReadyResponse changeReady(@RequestBody ReadyRequest readyRequest) {
-        ReadyResponse readyResponse = new ReadyResponse();
-        readyResponse.setReadyP1(readyRequest.isReadyP1());
-        readyResponse.setReadyP2(readyRequest.isReadyP2());
-        return readyResponse;
+    @MessageMapping("/updateConfig")
+    @SendTo("/topic/updateConfig")
+    public updateConfig configUpdate(@RequestBody updateConfig updateConfig) {
+        this.config = updateConfig;
+        return updateConfig;
+    }
+
+    @SubscribeMapping("/entry")
+    public EntryResponse entry() {
+        EntryResponse entryResponse = new EntryResponse();
+        entryResponse.setNameP1(nameP1);
+        entryResponse.setNameP2(nameP2);
+        if(config != null){
+            entryResponse.setConfig(config);
+        }
+        return entryResponse;
     }
 
 
@@ -56,6 +71,9 @@ public class ReadyPage {
     @MessageMapping("/start")
     @SendTo("/topic/gameStart")
     public boolean gameStart() {
+        nameP1 = "";
+        nameP2 = "";
+        config = null;
         return true;
     }
 
@@ -96,91 +114,22 @@ public class ReadyPage {
     }
 }
 
-@Data
-class ReadyRequest {
-    private boolean readyP1;
-    private boolean readyP2;
-
-    public boolean isReadyP1() {
-        return readyP1;
-    }
-
-    public void setReadyP1(boolean readyP1) {
-        this.readyP1 = readyP1;
-    }
-
-    public boolean isReadyP2() {
-        return readyP2;
-    }
-
-    public void setReadyP2(boolean readyP2) {
-        this.readyP2 = readyP2;
-    }
-}
-
-@Data
-class ReadyResponse {
-    private boolean readyP1;
-    private boolean readyP2;
-
-    public boolean isReadyP1() {
-        return readyP1;
-    }
-
-    public void setReadyP1(boolean readyP1) {
-        this.readyP1 = readyP1;
-    }
-
-    public boolean isReadyP2() {
-        return readyP2;
-    }
-
-    public void setReadyP2(boolean readyP2) {
-        this.readyP2 = readyP2;
-    }
-}
 
 @Data
 class NameRequest {
     private String nameP1;
     private String nameP2;
-
-    public String getNameP1() {
-        return nameP1;
-    }
-
-    public void setNameP1(String nameP1) {
-        this.nameP1 = nameP1;
-    }
-
-    public String getNameP2() {
-        return nameP2;
-    }
-
-    public void setNameP2(String nameP2) {
-        this.nameP2 = nameP2;
-    }
-
 }
 
 @Data
 class NameResponse {
     private String nameP1;
     private String nameP2;
+}
 
-    public String getNameP1() {
-        return nameP1;
-    }
-
-    public void setNameP1(String nameP1) {
-        this.nameP1 = nameP1;
-    }
-
-    public String getNameP2() {
-        return nameP2;
-    }
-
-    public void setNameP2(String nameP2) {
-        this.nameP2 = nameP2;
-    }
+@Data
+class EntryResponse {
+    private String nameP1;
+    private String nameP2;
+    private updateConfig config;
 }
