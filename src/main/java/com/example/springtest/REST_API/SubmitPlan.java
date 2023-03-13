@@ -4,7 +4,6 @@ import Game.Game;
 import com.example.springtest.BusinessLogic.Plan;
 import com.example.springtest.Exception.BadSubmitPlanException;
 import com.example.springtest.RequestBody.SubmitPlanReq;
-import com.example.springtest.websocket_route.GamePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -43,7 +42,6 @@ public class SubmitPlan {
 
 
     //TODO : mock test for this class
-    GamePage gamePage = new GamePage();
     @PostMapping("/submit_plan_mock")
     public ResponseEntity<Object> submitPlanMock(@RequestBody SubmitPlanReq submitPlanReq) {
         try {
